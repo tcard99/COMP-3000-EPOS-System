@@ -1,0 +1,39 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35417.141 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CafeEPOS", "CafeEPOS\CafeEPOS.csproj", "{161FA64A-E637-41C6-B75C-ABE49FEE995B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CafeEPOS.Shared", "CafeEPOS.Shared\CafeEPOS.Shared.csproj", "{55AE8945-D29C-4FF7-80D0-8372E5F9EEE6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CafeEPOS.Web", "CafeEPOS.Web\CafeEPOS.Web.csproj", "{8EE64587-E198-4F2F-8055-68629507B476}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CafeEPOS.Web.Client", "CafeEPOS.Web.Client\CafeEPOS.Web.Client.csproj", "{6132FF2F-2328-43A2-A6AD-5FBF1CF3C3CF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{161FA64A-E637-41C6-B75C-ABE49FEE995B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{161FA64A-E637-41C6-B75C-ABE49FEE995B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{161FA64A-E637-41C6-B75C-ABE49FEE995B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{161FA64A-E637-41C6-B75C-ABE49FEE995B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55AE8945-D29C-4FF7-80D0-8372E5F9EEE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55AE8945-D29C-4FF7-80D0-8372E5F9EEE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55AE8945-D29C-4FF7-80D0-8372E5F9EEE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55AE8945-D29C-4FF7-80D0-8372E5F9EEE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EE64587-E198-4F2F-8055-68629507B476}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EE64587-E198-4F2F-8055-68629507B476}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EE64587-E198-4F2F-8055-68629507B476}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EE64587-E198-4F2F-8055-68629507B476}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6132FF2F-2328-43A2-A6AD-5FBF1CF3C3CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6132FF2F-2328-43A2-A6AD-5FBF1CF3C3CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6132FF2F-2328-43A2-A6AD-5FBF1CF3C3CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6132FF2F-2328-43A2-A6AD-5FBF1CF3C3CF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

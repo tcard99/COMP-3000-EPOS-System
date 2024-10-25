@@ -1,0 +1,33 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+
+.loginButton {
+    text-align: center;
+    background-color: #9BE265;
+    border-radius: 50px;
+    height: 50px;
+    width: 250px;
+    border: none
+}
+
+    .loginButton:hover {
+        background-color: #8AC64F;
+    }
+
+.container-fluid1 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 50vh;
+    text-align: center;
+}
+
+.logo {
+    position: absolute;
+    left: 20px;
+    top: 20px;
+}

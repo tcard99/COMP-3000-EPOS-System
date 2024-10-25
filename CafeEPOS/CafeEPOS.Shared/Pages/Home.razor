@@ -1,14 +1,59 @@
 ﻿@page "/"
+@using CafeEPOS.Shared.Layout
 @using CafeEPOS.Shared.Services
 @inject IFormFactor FormFactor
+@layout NoLayout
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Welcome Screen</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1 style="text-align:center;">EPOS System</h1>
 
-Welcome to your new app running on <em>@factor</em> using <em>@platform</em>.
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+    }
 
-@code {
-    private string factor => FormFactor.GetFormFactor();
-    private string platform => FormFactor.GetPlatform();
+    .loginButton {
+        text-align: center;
+        background-color: #9BE265;
+        border-radius: 50px;
+        height: 50px;
+        width: 250px;
+        border: none
+    }
+
+        .loginButton:hover {
+            background-color: #8AC64F;
+        }
+
+    .container-fluid {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        text-align: center;
+    }
+</style>
+
+<!--Allow buttons to be centered in page-->
+<div class="container-fluid"> 
+
+    <!--Login button which will take user to login page-->
+    <a href="/custLogin">
+        <button class="loginButton">LOGIN</button>
+    </a>
+
+    <br />
+
+    <!--Register button which will take user to register page-->
+    <a href="/custRegister">
+    <button class="loginButton">REGISTER</button>
+    </a>
+
+</div>
+@code
+{
 }

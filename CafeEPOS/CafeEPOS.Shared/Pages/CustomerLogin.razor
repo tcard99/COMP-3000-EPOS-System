@@ -22,7 +22,7 @@
 
     <br />
 
-    <input type="password" placeholder="Enter Password" @bind="passwordVal" style="text-align:center; width:50%; border-radius:50px" required/>
+    <input type="password" placeholder="Enter Password" @bind="passwordVal" style="text-align:center; width:50%; border-radius:50px" @onkeypress="@Enter" />
 
     <div class="LoginBackContainer">
 
@@ -42,6 +42,7 @@
 
 @code
 {
+    //Allow me to use JS scripts and call them
     [Inject] IJSRuntime JS { get; set; }
 
     //Get the values from the userinputs
@@ -49,12 +50,13 @@
     public string passwordVal { get; set; }
 
 
+    //When login button clicked run this method
     public async void login()
     {
         //Not working
 #if WINDOWS || MACCATALYST || ANDROID || IOS
     await Application.Current.MainPage.DisplayAlert("Alert", "You have logged in :)", "OK");
-        #else
+#else
         if (usernameVal == "admin" && passwordVal == "Admin123")
         {
             await JS.InvokeVoidAsync("showAlert", $"You have logged in as {usernameVal}");
@@ -63,8 +65,18 @@
         {
             await JS.InvokeVoidAsync("showAlert", "Incorrect username or password");
         }
-        #endif
+#endif
 
         //Make Call to Service to login
+
+    }
+    
+    //Allow user to activate login method when enter key is pressed
+    public void Enter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter")
+        {
+        login();
+        }
     }
 }

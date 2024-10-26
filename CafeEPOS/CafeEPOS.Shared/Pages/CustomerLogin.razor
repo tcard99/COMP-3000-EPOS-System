@@ -1,6 +1,10 @@
 ﻿@page "/custLogin"
 @using CafeEPOS.Shared.Layout
 @layout NoLayout
+@inject NavigationManager navigation
+@using Microsoft.Maui.Controls
+
+
 
 <PageTitle>Account Login</PageTitle>
 
@@ -14,13 +18,53 @@
 <div class="container-fluid1">
     <h2 style="text-align:center">LOGIN</h2>
 
-    <input type="email" placeholder="Enter Email " style="text-align:center" />
+    <input type="email" placeholder="Enter Email" @bind="usernameVal" style="text-align:center; width:50%; border-radius:50px" />
 
     <br />
 
-    <input type="password" placeholder="Enter Password" style="text-align:center" />
+    <input type="password" placeholder="Enter Password" @bind="passwordVal" style="text-align:center; width:50%; border-radius:50px" required/>
+
+    <div class="LoginBackContainer">
+
+        <a href="/">
+            <button class="backButton">Back</button>
+        </a>
+
+        <button class="loginButton" @onclick="login">Login</button>
+    </div>
 </div>
 
-@code {
+<script>
+    function showAlert(message) {
+        alert(message);
+    }
+</script>
 
+@code
+{
+    [Inject] IJSRuntime JS { get; set; }
+
+    //Get the values from the userinputs
+    public string usernameVal { get; set; }
+    public string passwordVal { get; set; }
+
+
+    public async void login()
+    {
+        //Not working
+#if WINDOWS || MACCATALYST || ANDROID || IOS
+    await Application.Current.MainPage.DisplayAlert("Alert", "You have logged in :)", "OK");
+        #else
+        if (usernameVal == "admin" && passwordVal == "Admin123")
+        {
+            await JS.InvokeVoidAsync("showAlert", $"You have logged in as {usernameVal}");
+        }
+        else
+        {
+            await JS.InvokeVoidAsync("showAlert", "Incorrect username or password");
+        }
+        #endif
+
+        //Make Call to Service to login
+    }
 }

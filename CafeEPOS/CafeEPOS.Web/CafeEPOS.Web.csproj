@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\CafeEPOS.Web.Client\CafeEPOS.Web.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.0-rc.2.24474.3" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.0-rc.2.24503.2" />
   </ItemGroup>
 
 </Project>

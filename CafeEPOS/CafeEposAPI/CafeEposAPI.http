@@ -1,0 +1,6 @@
+@CafeEposAPI_HostAddress = http://localhost:5123
+
+GET {{CafeEposAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

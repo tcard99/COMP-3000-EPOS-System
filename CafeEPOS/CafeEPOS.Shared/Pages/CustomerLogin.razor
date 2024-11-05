@@ -16,7 +16,7 @@
 <h1 style="text-align:center; padding-top:20px">EPOS System</h1>
 
 <!--Put login title and input boxs in middle of page-->
-@* <div class="container-fluid1">
+<div class="container-fluid1">
     <h2 style="text-align:center">LOGIN</h2>
 
     <input type="email" placeholder="Enter Email" @bind="usernameVal" style="text-align:center; width:50%; border-radius:50px" />
@@ -33,39 +33,6 @@
 
         <button class="loginButton" @onclick="login">Login</button>
     </div>
-</div> *@
-
-<div class="container-fluid1">
-    <h2 style="text-align:center">Register</h2>
-
-    <EditForm Model="@registerModel" OnValidSubmit="@HandleValidSubmit">
-        <DataAnnotationsValidator />
-
-        <div>
-            <label for="orgName">Organisation Name:</label>
-            <InputText id="orgName" @bind-Value="registerModel.OrganisationName" class="input-field" placeholder="Enter Organisation Name" />
-            <ValidationMessage For="@(() => registerModel.OrganisationName)" />
-        </div>
-        
-        <div>
-            <label for="email">Email:</label>
-            <InputText id="email" @bind-Value="registerModel.Email" type="email" class="input-field" placeholder="Enter Email" />
-            <ValidationMessage For="@(() => registerModel.Email)" />
-        </div>
-
-        <div>
-            <label for="password">Password:</label>
-            <InputText id="password" @bind-Value="registerModel.Password" type="password" class="input-field" placeholder="Enter Password" />
-            <ValidationMessage For="@(() => registerModel.Password)" />
-        </div>
-
-        <div class="LoginBackContainer">
-            <a href="/">
-                <button class="backButton">Back</button>
-            </a>
-            <button type="submit" class="loginButton">Register</button>
-        </div>
-    </EditForm>
 </div>
 
 <script src="_content/CafeEPOS.Shared/js/site.js"></script>

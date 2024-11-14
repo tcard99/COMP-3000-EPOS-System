@@ -18,7 +18,7 @@ namespace CafeEposAPI.Controllers
         }
 
         //Get request to find system user account
-        [HttpGet(Name = "GetSystemAccount")]
+        [HttpGet("GetSystemAccount")]
         public IEnumerable<SystemAccountEntity> GetSystemAccount(string token)
         {
             //check to see if a token has been entered
@@ -34,7 +34,7 @@ namespace CafeEposAPI.Controllers
             }
         }
 
-        [HttpPost(Name = "CreateNewSystemUser")]
+        [HttpPost("CreateNewSystemUser")]
         public string PostNewSystemUser(CreateSystemUserModel newUser)
         {
             var newSystemAccount = new SystemAccountEntity

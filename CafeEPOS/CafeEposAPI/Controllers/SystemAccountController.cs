@@ -45,9 +45,20 @@ namespace CafeEposAPI.Controllers
                 Token = Guid.NewGuid().ToString(),
             };
 
+            _eposDbContext.Add(newSystemAccount);
 
-            return string.Empty;
+            try
+            {
+                _eposDbContext.SaveChanges();
+                return newSystemAccount.Token;
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 401;
+                return string.Empty;
+            }
+
         }
-        
+
     }
 }

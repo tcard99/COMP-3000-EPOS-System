@@ -98,14 +98,7 @@
                 }
                 else
                 {
-                    if (FF.GetFormFactor().StartsWith("Web"))
-                    {
-                        await JS.InvokeVoidAsync("showAlert", $"You have logged in");
-                    }
-                    else
-                    {
-                        await Application.Current.MainPage.DisplayAlert("Alert", "You have logged in", "OK");
-                    }
+                    navigation.NavigateTo("/SystemChoosePage");
                 }
             }
         }

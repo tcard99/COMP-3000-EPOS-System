@@ -10,7 +10,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CafeEPOS.Web", "CafeEPOS.We
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CafeEPOS.Web.Client", "CafeEPOS.Web.Client\CafeEPOS.Web.Client.csproj", "{6132FF2F-2328-43A2-A6AD-5FBF1CF3C3CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CafeEposAPI", "CafeEposAPI\CafeEposAPI.csproj", "{190570D6-F7CA-443C-A82D-7E257B42C1E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CafeEposAPI", "CafeEposAPI\CafeEposAPI.csproj", "{190570D6-F7CA-443C-A82D-7E257B42C1E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

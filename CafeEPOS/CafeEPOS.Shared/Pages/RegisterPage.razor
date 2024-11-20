@@ -97,14 +97,7 @@
                 }
                 else
                 {
-                    if (FF.GetFormFactor().StartsWith("Web"))
-                    {
-                        await JS.InvokeVoidAsync("showAlert", $"You have registered");
-                    }
-                    else
-                    {
-                        await Application.Current.MainPage.DisplayAlert("Alert", "You have registered", "OK");
-                    }
+                   navigation.NavigateTo("/SystemChoosePage");
                 }
             }
         }

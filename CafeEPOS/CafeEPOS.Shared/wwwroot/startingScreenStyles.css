@@ -17,6 +17,36 @@ html, body {
         background-color: #8AC64F;
     }
 
+
+.KDSButton {
+    text-align: center;
+    background-color: grey;
+    border-radius: 50px;
+    height: 250px;
+    width: 250px;
+    border: none;
+    font-size: 50px;
+}
+
+    .KDSButton:hover {
+        background-color: #8AC64F;
+    }
+
+
+.EposButton {
+    text-align: center;
+    background-color: grey;
+    border-radius: 50px;
+    height: 250px;
+    width: 250px;
+    border: none;
+    font-size: 50px;
+}
+
+    .EposButton:hover {
+        background-color: #8AC64F;
+    }
+
 .backButton {
     text-align: center;
     background-color: #FFA0A0;
@@ -29,6 +59,11 @@ html, body {
     .backButton:hover {
         background-color: #FF7F7F;
     }
+
+.systemOptionButtons {
+    width: 100px;
+    height: 100px;
+}
 
 .container-fluid1 {
     display: flex;

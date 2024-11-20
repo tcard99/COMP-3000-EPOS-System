@@ -46,8 +46,8 @@
     [Inject] IFormFactor FF { get; set; }
 
     //Get the values from the userinputs
-    public string usernameVal { get; set; }
-    public string passwordVal { get; set; }
+    public string usernameVal { get; set; } = "test1@test1.co.uk";
+    public string passwordVal { get; set; } = "password";
 
     //When login button clicked run this method
     public async void login()

@@ -67,7 +67,7 @@
         else
         {
             //Check to see if given username is a valid email address
-            if (isValidEmail(usernameVal) == false)
+            if (EmailValidationService.isValidEmail(usernameVal) == false)
             {
                 if (FF.GetFormFactor().StartsWith("Web"))
                 {
@@ -117,20 +117,6 @@
         if (e.Code == "Enter")
         {
             login();
-        }
-    }
-
-    //Email Validation Method
-    public bool isValidEmail(string email)
-    {
-        try
-        {
-            MailAddress mailAddr = new MailAddress(email);
-            return true;
-        }
-        catch (FormatException)
-        {
-            return false;
         }
     }
 }

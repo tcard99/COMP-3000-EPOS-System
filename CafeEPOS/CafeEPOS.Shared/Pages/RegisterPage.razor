@@ -54,14 +54,60 @@
 
     public async void register()
     {
-        if (FF.GetFormFactor().StartsWith("Web"))
+        if (orgNameVal == null || usernameVal == null || passwordVal == null)
         {
-            await JS.InvokeVoidAsync("showAlert", "You have registered");
+            if (FF.GetFormFactor().StartsWith("Web"))
+            {
+                await JS.InvokeVoidAsync("showAlert", "Please enter all feilds");
+            }
+            else
+            {
+                await Application.Current.MainPage.DisplayAlert("Alert", "Please enter all feilds", "OK");
+            }
         }
         else
         {
-            await Application.Current.MainPage.DisplayAlert("Alert", "You have registered", "OK");
+            if (EmailValidationService.isValidEmail(usernameVal) == false)
+            {
+                if (FF.GetFormFactor().StartsWith("Web"))
+                {
+                    await JS.InvokeVoidAsync("showAlert", $"Please enter a valid email");
+                }
+                else
+                {
+                    await Application.Current.MainPage.DisplayAlert("Alert", "Please enter a valid email", "OK");
+                }
+            }
+            else
+            {
+                var authService = new AuthenticationService();
+
+                var register = await authService.SystemAccountRegistrationCall(orgNameVal, usernameVal, passwordVal);
+
+                if (register == "")
+                {
+                    if (FF.GetFormFactor().StartsWith("Web"))
+                    {
+                        await JS.InvokeVoidAsync("showAlert", $"Registration Faild");
+                    }
+                    else
+                    {
+                        await Application.Current.MainPage.DisplayAlert("Alert", "Registration Faild", "OK");
+                    }
+                }
+                else
+                {
+                    if (FF.GetFormFactor().StartsWith("Web"))
+                    {
+                        await JS.InvokeVoidAsync("showAlert", $"You have registered");
+                    }
+                    else
+                    {
+                        await Application.Current.MainPage.DisplayAlert("Alert", "You have registered", "OK");
+                    }
+                }
+            }
         }
     }
-
 }
+

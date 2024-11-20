@@ -4,7 +4,7 @@
 @inject NavigationManager navigation
 @using Microsoft.Maui.Controls
 @using CafeEPOS.Shared.Services
-
+@using System.Net.Mail
 
 
 <PageTitle>Account Login</PageTitle>
@@ -49,35 +49,66 @@
     public string usernameVal { get; set; }
     public string passwordVal { get; set; }
 
-
     //When login button clicked run this method
     public async void login()
     {
-        if (FF.GetFormFactor().StartsWith("Web"))
+        //Check to see if input feilds have been given a value
+        if (usernameVal == null || passwordVal == null)
         {
-            if (usernameVal == "admin" && passwordVal == "Admin123")
+            if (FF.GetFormFactor().StartsWith("Web"))
             {
-                await JS.InvokeVoidAsync("showAlert", $"You have logged in as {usernameVal}");
+                await JS.InvokeVoidAsync("showAlert", $"Please enter all feilds");
             }
             else
             {
-                await JS.InvokeVoidAsync("showAlert", "Incorrect username or password");
+                await Application.Current.MainPage.DisplayAlert("Alert", "Please enter all feilds", "OK");
             }
         }
         else
         {
-            if (usernameVal == "admin" && passwordVal == "Admin123")
+            //Check to see if given username is a valid email address
+            if (isValidEmail(usernameVal) == false)
             {
-                await Application.Current.MainPage.DisplayAlert("Alert", "You have logged in :)", "OK");
+                if (FF.GetFormFactor().StartsWith("Web"))
+                {
+                    await JS.InvokeVoidAsync("showAlert", $"Please enter a valid email");
+                }
+                else
+                {
+                    await Application.Current.MainPage.DisplayAlert("Alert", "Please enter a valid email", "OK");
+                }
             }
             else
             {
-                await Application.Current.MainPage.DisplayAlert("Alert", "Incorrect username or password", "OK");
+
+                var authService = new AuthenticationService();
+
+                var login = await authService.SystemAccountLoginCall(usernameVal, passwordVal);
+
+                if (login == "")
+                {
+                    if (FF.GetFormFactor().StartsWith("Web"))
+                    {
+                        await JS.InvokeVoidAsync("showAlert", $"Incorrect username or password");
+                    }
+                    else
+                    {
+                        await Application.Current.MainPage.DisplayAlert("Alert", "Incorrect username or password", "OK");
+                    }
+                }
+                else
+                {
+                    if (FF.GetFormFactor().StartsWith("Web"))
+                    {
+                        await JS.InvokeVoidAsync("showAlert", $"You have logged in");
+                    }
+                    else
+                    {
+                        await Application.Current.MainPage.DisplayAlert("Alert", "You have logged in", "OK");
+                    }
+                }
             }
         }
-
-        //Make Call to Service to login
-
     }
 
     //Allow user to activate login method when enter key is pressed
@@ -86,6 +117,20 @@
         if (e.Code == "Enter")
         {
             login();
+        }
+    }
+
+    //Email Validation Method
+    public bool isValidEmail(string email)
+    {
+        try
+        {
+            MailAddress mailAddr = new MailAddress(email);
+            return true;
+        }
+        catch (FormatException)
+        {
+            return false;
         }
     }
 }

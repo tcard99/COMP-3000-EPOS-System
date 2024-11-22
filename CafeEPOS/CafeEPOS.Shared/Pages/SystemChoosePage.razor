@@ -32,11 +32,17 @@
 
 </div>
 
+<script src="_content/CafeEPOS.Shared/js/site.js"></script>
 
 @code 
 {
-    public void logout()
+    //Allow me to use JS scripts and call them
+    [Inject] IJSRuntime JS { get; set; }
+
+    public async void logout()
     {
         navigation.NavigateTo("/");
     }
+
+
 }

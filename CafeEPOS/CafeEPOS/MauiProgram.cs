@@ -18,6 +18,7 @@ namespace CafeEPOS
 
             // Add device-specific services used by the CafeEPOS.Shared project
             builder.Services.AddSingleton<IFormFactor, FormFactor>();
+            builder.Services.AddTransient<LocalStorageService, LocalStorageService>();
 
             builder.Services.AddMauiBlazorWebView();
 

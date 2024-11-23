@@ -22,14 +22,15 @@ namespace CafeEPOS.Shared.Services
             await JS.InvokeVoidAsync("storeValue", key, value);
         }
 
-        public async Task GetValue(string key)
-        {
-            await JS.InvokeAsync<String>("getValue", key);
+        public async Task<string> GetValue(string key) 
+        { 
+            return await JS.InvokeAsync<string>("getValue", key); 
         }
 
-        public async void RemoveValue(string key)
+        public async Task RemoveValue(string key)
         {
             await JS.InvokeVoidAsync("removeValue", key);
         }
+
     }
 }

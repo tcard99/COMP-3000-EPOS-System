@@ -7,7 +7,8 @@ function storeValue(key, value) {
 }
 
 function getValue(key) {
-    return localStorage.getItem(key);
+    let v = localStorage.getItem(key);
+    return v;
 }
 
 function removeValue(key) {

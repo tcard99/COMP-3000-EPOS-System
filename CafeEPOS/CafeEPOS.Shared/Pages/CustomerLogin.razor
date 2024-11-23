@@ -6,6 +6,7 @@
 @using CafeEPOS.Shared.Services
 @using System.Net.Mail
 
+
 <PageTitle>Account Login</PageTitle>
 
 <link rel="stylesheet" href="_content/CafeEPOS.Shared/startingScreenStyles.css" />
@@ -44,9 +45,14 @@
     //Generated service on project creation allows you to know which device user is on
     [Inject] IFormFactor FF { get; set; }
 
+    [Inject] LocalStorageService _localStorage { get; set; }
+
     //Get the values from the userinputs
     public string usernameVal { get; set; } = "test1@test1.co.uk";
     public string passwordVal { get; set; } = "password";
+
+
+
 
     //When login button clicked run this method
     public async void login()
@@ -97,6 +103,7 @@
                 }
                 else
                 {
+                    await _localStorage.StoreValue("okten", login);
                     navigation.NavigateTo("/SystemChoosePage");
                 }
             }

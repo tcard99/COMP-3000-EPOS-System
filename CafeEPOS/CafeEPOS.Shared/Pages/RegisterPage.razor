@@ -48,6 +48,8 @@
 
     [Inject] IFormFactor FF { get; set; }
 
+    [Inject] LocalStorageService _localStorage { get; set; }
+
     public string orgNameVal { get; set; }
     public string usernameVal { get; set; }
     public string passwordVal { get; set; }
@@ -97,7 +99,8 @@
                 }
                 else
                 {
-                   navigation.NavigateTo("/SystemChoosePage");
+                    await _localStorage.StoreValue("okten", register);
+                    navigation.NavigateTo("/SystemChoosePage");
                 }
             }
         }

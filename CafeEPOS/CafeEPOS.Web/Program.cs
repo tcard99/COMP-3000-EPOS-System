@@ -12,6 +12,8 @@ builder.Services.AddRazorComponents()
 // Add device-specific services used by the CafeEPOS.Shared project
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
 
+builder.Services.AddTransient<LocalStorageService, LocalStorageService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

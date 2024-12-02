@@ -48,5 +48,20 @@ namespace CafeEPOS.Shared.Services
             return await response.Content.ReadAsStringAsync();
         }
 
+        //Method to call the staff login method on API
+        public async Task<bool> StaffLogin(string token, string userId, string passcode)
+        {
+            var data = new
+            {
+                token = token,
+                staffId = userId,
+                passcode = passcode
+            };
+
+            var response = await _httpClient.PostAsJsonAsync(baseApiUrl + "Auth/StaffLogin", data);
+
+            return await response.Content.ReadFromJsonAsync<bool>();
+        }
+
     }
 }

@@ -32,5 +32,22 @@ namespace CafeEposAPI.Controllers
                 return string.Empty;
             }
         }
+
+        [HttpPost("StaffLogin")]
+        public bool StaffLogin(StaffLoginModel staffLogin)
+        {
+            var userId = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == staffLogin.token);
+            var user = _eposDbContext.StaffAccounts.SingleOrDefault(x => x.staffId == staffLogin.staffId && x.passcode == staffLogin.passcode && x.sysAccountId == userId.Id);
+
+            if (user != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
     }
 }

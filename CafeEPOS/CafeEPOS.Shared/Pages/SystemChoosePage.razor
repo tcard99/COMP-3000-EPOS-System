@@ -19,7 +19,7 @@
 
     <div class="LoginBackContainer">
         <div class="LoginBackContainer" style="padding-bottom:20px">
-            <button class="EposButton" style="margin-right:10px">
+            <button class="EposButton" style="margin-right:10px" @onclick="EposPage">
                 EPOS
             </button>
             <button class="KDSButton">
@@ -46,5 +46,9 @@
         navigation.NavigateTo("/");
     }
 
+    public void EposPage()
+    {
+        navigation.NavigateTo("/EposStaffLogin");
+    }
 
 }

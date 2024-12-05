@@ -83,3 +83,32 @@ html, body {
 .LoginBackContainer {
     padding-top: 20px;
 }
+
+.table-containter{
+    flex-grow:1;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.gird-button{
+    padding: 10px; 20px;
+    border: none;
+    border-radius:100px;
+    text-align:center;
+    width: 200px;
+    height:150px;
+    background-color: gray;
+}
+.gird-button:hover {
+    background-color: #8AC64F;
+}
+
+
+table {
+    border-collapse: collapse;
+}
+
+td {
+    padding: 20px;
+}

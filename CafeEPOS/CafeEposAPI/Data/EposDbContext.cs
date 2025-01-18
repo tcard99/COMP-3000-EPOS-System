@@ -12,5 +12,7 @@ namespace CafeEposAPI.Data
 
         public DbSet<SystemAccountEntity> SystemAccounts { get; set; }
         public DbSet<staffLoginEntity> StaffAccounts { get; set; }
+        public DbSet<menuEntity> Menu { get; set; }
+        public DbSet<categoryEntity> Category { get; set; }
     }
 }

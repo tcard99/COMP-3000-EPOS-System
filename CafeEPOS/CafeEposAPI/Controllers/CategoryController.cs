@@ -114,5 +114,72 @@ namespace CafeEposAPI.Controllers
             }
 
         }
+
+        //Update method
+        [HttpPut("UpdateCategory")]
+        public bool UpdateCategory(string sysAccountToken, int catId, string name, int newParentId)
+        {
+            //Find user
+            var foundUser = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == sysAccountToken);
+
+            //Check to see if exists 
+            if (foundUser == null)
+            {
+                return false;
+            }
+
+            //Find Category
+            var foundCat = _eposDbContext.Category.SingleOrDefault(x => x.Id == catId);
+
+            //Check to see if exists
+            if (foundCat == null)
+            {
+                return false;
+            }
+
+            foundCat.Name = name;
+            foundCat.parentId = newParentId;
+
+            try
+            {
+                _eposDbContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        //SOft delete category
+        [HttpPut("SoftDelCategory")]
+        public bool SoftDelCategory(string sysAccountToken, int catId)
+        {
+            var foundUser = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == sysAccountToken);
+
+            if (foundUser == null)
+            {
+                return false;
+            }
+
+            var foundCat = _eposDbContext.Category.SingleOrDefault(x => x.Id == catId);
+
+            if ( foundCat == null)
+            {
+                return false;
+            }
+
+            foundCat.archived = 1;
+
+            try
+            {
+                _eposDbContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
     }
 }

@@ -34,7 +34,7 @@ namespace CafeEposAPI.Controllers
             }
 
             //Find all parent categoies which belong to logged in account
-            var result = _eposDbContext.Category.Where(x => x.parentId == null && x.sysAccountId == foundSysAccount.Id && x.archived != 1);
+            var result = _eposDbContext.Category.Where(x => x.parentId == null && x.sysAccountId == foundSysAccount.Id && x.archived == 0);
 
             //Check to see if there is any
             if (result.Count() > 0)
@@ -63,7 +63,7 @@ namespace CafeEposAPI.Controllers
 
 
             //Find all child cateogies 
-            var result = _eposDbContext.Category.Where(x => x.parentId == parentId && x.sysAccountId == foundSysAccount.Id && x.archived != 1);
+            var result = _eposDbContext.Category.Where(x => x.parentId == parentId && x.sysAccountId == foundSysAccount.Id && x.archived == 0);
 
             //Check to see if there is any 
             if (result.Count() > 0)
@@ -117,7 +117,7 @@ namespace CafeEposAPI.Controllers
 
         //Update method
         [HttpPut("UpdateCategory")]
-        public bool UpdateCategory(string sysAccountToken, int catId, string name, int newParentId)
+        public bool UpdateCategory(string sysAccountToken, int catId, CreateCategoryModel updateCatInfo)
         {
             //Find user
             var foundUser = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == sysAccountToken);
@@ -137,8 +137,8 @@ namespace CafeEposAPI.Controllers
                 return false;
             }
 
-            foundCat.Name = name;
-            foundCat.parentId = newParentId;
+            foundCat.Name = updateCatInfo.Name;
+            foundCat.parentId = updateCatInfo.parentId;
 
             try
             {

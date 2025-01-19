@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace CafeEposAPI.Data.Entity
 {
@@ -11,6 +12,7 @@ namespace CafeEposAPI.Data.Entity
         public string Name { get; set; }
         public int categortyId { get; set; }
         public string price { get; set; }
+        [JsonIgnore]
         public int sysAccountId { get; set; }
         public int archived { get; set; }
 

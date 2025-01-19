@@ -34,7 +34,7 @@ namespace CafeEposAPI.Controllers
             }
 
             //Find all parent categoies which belong to logged in account
-            var result = _eposDbContext.Category.Where(x => x.parentId == null && x.sysAccountId == foundSysAccount.Id);
+            var result = _eposDbContext.Category.Where(x => x.parentId == null && x.sysAccountId == foundSysAccount.Id && x.archived != 1);
 
             //Check to see if there is any
             if (result.Count() > 0)
@@ -63,7 +63,7 @@ namespace CafeEposAPI.Controllers
 
 
             //Find all child cateogies 
-            var result = _eposDbContext.Category.Where(x => x.parentId == parentId && x.sysAccountId == foundSysAccount.Id);
+            var result = _eposDbContext.Category.Where(x => x.parentId == parentId && x.sysAccountId == foundSysAccount.Id && x.archived != 1);
 
             //Check to see if there is any 
             if (result.Count() > 0)
@@ -94,7 +94,8 @@ namespace CafeEposAPI.Controllers
             {
                 Name = newCatModel.Name,
                 parentId = newCatModel.parentId,
-                sysAccountId = foundSysAccount.Id
+                sysAccountId = foundSysAccount.Id,
+                archived = 0
             };
 
 

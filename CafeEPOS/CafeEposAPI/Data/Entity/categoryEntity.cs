@@ -11,5 +11,6 @@ namespace CafeEposAPI.Data.Entity
         public string Name { get; set; }
         public int? parentId { get; set; }
         public int sysAccountId { get; set; }
+        public int archived { get; set; }
     }
 }

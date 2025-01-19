@@ -12,6 +12,7 @@ namespace CafeEposAPI.Data.Entity
         public int categortyId { get; set; }
         public string price { get; set; }
         public int sysAccountId { get; set; }
+        public int archived { get; set; }
 
     }
 }

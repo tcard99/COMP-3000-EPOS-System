@@ -1,0 +1,68 @@
+﻿@page "/menu"
+@using CafeEPOS.Shared.Layout
+@layout NoLayout
+@inject NavigationManager navigation
+@using Microsoft.Maui.Controls
+@using CafeEPOS.Shared.Services
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Models
+@using System.Linq
+
+<PageTitle>Menu</PageTitle>
+
+<link rel="stylesheet" href="_content/CafeEPOS.Shared/startingScreenStyles.css" />
+
+<img src="_content/CafeEPOS.Shared/images/ImagePlaceholder.png" width="100" height="100" class="logo" alt="Logo" />
+<h1 style="text-align:center; padding-top:20px">EPOS System </h1>
+<h2 style="text-align:center;">Menu</h2>
+
+
+<div class="container-fluid1">
+    <!--Check to see if there are any items-->
+    @if (items == null)
+    {
+        <p>No Menu Items Found</p>
+    }
+    else
+    {
+        <!--If there are items display all items-->
+        <QuickGrid Items="items">
+            <PropertyColumn Property="@(x => x.Name)" />
+            <PropertyColumn Property="@(x => x.price)" />
+
+            <TemplateColumn Context="items">
+                <button>Edit</button>
+                <button>Remove</button>
+            </TemplateColumn>
+        </QuickGrid>
+    }
+</div>
+
+<script src="_content/CafeEPOS.Shared/js/site.js"></script>
+
+@code
+{
+    [Inject] IJSRuntime JS { get; set; }
+
+    [Inject] IFormFactor FF { get; set; }
+
+    [Inject] LocalStorageService _localStorage { get; set; }
+
+    private IQueryable<MenuModel> items = null;
+
+
+    //Get system account token
+    public async Task<string> getToken()
+    {
+        return await _localStorage.GetValue("okten");
+    }
+
+    //On page load retive all menu items from Db
+    protected override async Task OnInitializedAsync()
+    {
+        var menuServ = new MenuService();
+        var token = await getToken();
+        items = (await menuServ.GetAllMenuItemsCall(token)).AsQueryable();
+
+    }
+}

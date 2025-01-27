@@ -60,7 +60,8 @@ namespace CafeEposAPI.Controllers
             {
                 Name = newMenuModel.Name,
                 categortyId = newMenuModel.CatagoryId,
-                price = newMenuModel.Price
+                price = newMenuModel.Price,
+                sysAccountId = foundUser.Id
             };
 
             _eposDbContext.Add(newMenuItem);

@@ -11,10 +11,10 @@ namespace CafeEposAPI.Data.Entity
         public int Id { get; set; }
         public string Name { get; set; }
         public int categortyId { get; set; }
+        public categoryEntity category { get; set; } = null!;
         public string price { get; set; }
         [JsonIgnore]
         public int sysAccountId { get; set; }
         public int archived { get; set; }
-
     }
 }

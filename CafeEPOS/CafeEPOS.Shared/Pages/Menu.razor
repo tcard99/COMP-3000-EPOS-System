@@ -28,10 +28,11 @@
         <!--If there are items display all items-->
         <QuickGrid Items="items">
             <PropertyColumn Property="@(x => x.Name)" />
+            <PropertyColumn Property="@(x => x.categoryName)" />
             <PropertyColumn Property="@(x => x.price)" />
 
             <TemplateColumn Context="items">
-                <button>Edit</button>
+                <button>Edit</button> 
                 <button>Remove</button>
             </TemplateColumn>
         </QuickGrid>
@@ -49,6 +50,8 @@
     [Inject] LocalStorageService _localStorage { get; set; }
 
     private IQueryable<MenuModel> items = null;
+
+    [Parameter] public int id { get; set; }
 
 
     //Get system account token

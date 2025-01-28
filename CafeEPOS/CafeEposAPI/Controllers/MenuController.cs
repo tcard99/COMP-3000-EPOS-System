@@ -21,25 +21,43 @@ namespace CafeEposAPI.Controllers
 
         //Method to get all menu items or only category menu items
         [HttpGet("GetMenu")]
-        public IEnumerable<menuEntity> GetMenu(string sysAccountToken, int? catId)
+        public IEnumerable<ReturnMenuItemModel> GetMenu(string sysAccountToken, int? catId)
         {
             var foundUser = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == sysAccountToken);
 
             if (foundUser == null)
             {
-                return new List<menuEntity>();
+                return new List<ReturnMenuItemModel>();
             }
 
             //if cat id is null return all menu items
             if (catId == null)
             {
-                var allMenu = _eposDbContext.Menu.Where(x => x.sysAccountId == foundUser.Id && x.archived == 0);
+                var allMenu = _eposDbContext.Menu.Where(x => x.sysAccountId == foundUser.Id && x.archived == 0)
+                    .Select(x => new ReturnMenuItemModel
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        categoryId = x.categortyId,
+                        categoryName = x.category.Name,
+                        price = x.price,
+                        archived = x.archived
+                    });
                 return allMenu.ToList();
             }
             //otherwise return all items for the given category
             else
             {
-                var catMenuItems = _eposDbContext.Menu.Where(x => x.sysAccountId == foundUser.Id && x.categortyId == catId && x.archived == 0);
+                var catMenuItems = _eposDbContext.Menu.Where(x => x.sysAccountId == foundUser.Id && x.categortyId == catId && x.archived == 0)
+                    .Select(x => new ReturnMenuItemModel
+                    {
+                        Id = x.Id,
+                        Name= x.Name,
+                        categoryId= x.categortyId,
+                        categoryName= x.category.Name,
+                        price = x.price,
+                        archived = x.archived
+                    });
                 return catMenuItems.ToList();
             }
         }

@@ -27,7 +27,7 @@
     {
         <!--If there are items display all items-->
         <QuickGrid Items="items">
-            <PropertyColumn Property="@(x => x.Name)"/>
+            <PropertyColumn Property="@(x => x.Name)" />
             <PropertyColumn Property="@(x => x.parentName)" Title="Parent Category" />
 
             <TemplateColumn Context="items">
@@ -36,6 +36,14 @@
             </TemplateColumn>
         </QuickGrid>
     }
+
+    <div class="container-fluid1">
+        <div class="LoginBackContainer">
+            <button class="backButton" @onclick="back">Back</button>
+            <button class="loginButton">Add</button>
+        </div>
+    </div>
+
 </div>
 
 <script src="_content/CafeEPOS.Shared/js/site.js"></script>
@@ -63,5 +71,9 @@
         var token = await getToken();
         items = (await menuServ.GetAllCategoiesCall(token)).AsQueryable();
 
+    }
+
+    public void back(){
+        navigation.NavigateTo("/EposDash");
     }
 }

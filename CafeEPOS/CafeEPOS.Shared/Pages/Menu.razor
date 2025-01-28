@@ -32,11 +32,18 @@
             <PropertyColumn Property="@(x => x.price)" />
 
             <TemplateColumn Context="items">
-                <button>Edit</button> 
+                <button>Edit</button>
                 <button>Remove</button>
             </TemplateColumn>
         </QuickGrid>
     }
+
+    <div class="container-fluid1">
+        <div class="LoginBackContainer">
+            <button class="backButton" @onclick="back">Back</button>
+            <button class="loginButton">Add</button>
+        </div>
+    </div>
 </div>
 
 <script src="_content/CafeEPOS.Shared/js/site.js"></script>
@@ -64,5 +71,10 @@
         var token = await getToken();
         items = (await menuServ.GetAllMenuItemsCall(token)).AsQueryable();
 
+    }
+
+    public void back()
+    {
+        navigation.NavigateTo("/EposDash");
     }
 }

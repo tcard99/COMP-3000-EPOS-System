@@ -20,6 +20,42 @@ namespace CafeEposAPI.Controllers
         }
 
 
+        //Method to get all categoies
+        [HttpGet("getAllCategoies")]
+        public IEnumerable<ReturnCategoryModel> GetAllCategoies(string sysAccountToken)
+        {
+            //Find system account by passed in id
+            var foundSysAccount = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == sysAccountToken);
+
+            //If null return empty list
+            if (foundSysAccount == null)
+            {
+                return new List<ReturnCategoryModel>();
+            }
+
+            //Find all categoies which belong to logged in account
+            var result = _eposDbContext.Category.Where(x => x.sysAccountId == foundSysAccount.Id && x.archived == 0)
+                .Select(x => new ReturnCategoryModel
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    parentId = x.parentId,
+                    parentName = x.parentCategory.Name == null ? "N/A" : x.parentCategory.Name,
+                    archived = x.archived
+                });
+
+            //Check to see if there is any
+            if (result.Count() > 0)
+            {
+                return result;
+            }
+            else
+            {
+                return new List<ReturnCategoryModel>();
+            }
+        }
+
+
         //Method to find all parent categoies
         [HttpGet("getParentCategoires")]
         public IEnumerable<ReturnCategoryModel> GetParentCategory(string sysAccountToken)
@@ -72,6 +108,43 @@ namespace CafeEposAPI.Controllers
 
             //Find all child cateogies 
             var result = _eposDbContext.Category.Where(x => x.parentId == parentId && x.sysAccountId == foundSysAccount.Id && x.archived == 0)
+                .Select(x => new ReturnCategoryModel
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    parentId = x.parentId,
+                    parentName = x.parentCategory.Name,
+                    archived = x.archived
+                });
+
+            //Check to see if there is any 
+            if (result.Count() > 0)
+            {
+                return result;
+            }
+            else
+            {
+                return new List<ReturnCategoryModel>();
+            }
+        }
+
+        //Method to get specified category
+        [HttpGet("getSingleCategory")]
+        public IEnumerable<ReturnCategoryModel> GetSingleCategory(string sysAccountToken, int catId)
+        {
+            //find system account
+            var foundSysAccount = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == sysAccountToken);
+
+
+            //Check to see if exists 
+            if (foundSysAccount == null)
+            {
+                return new List<ReturnCategoryModel>();
+            }
+
+
+            //Find all child cateogies 
+            var result = _eposDbContext.Category.Where(x => x.Id == catId && x.sysAccountId == foundSysAccount.Id && x.archived == 0)
                 .Select(x => new ReturnCategoryModel
                 {
                     Id = x.Id,

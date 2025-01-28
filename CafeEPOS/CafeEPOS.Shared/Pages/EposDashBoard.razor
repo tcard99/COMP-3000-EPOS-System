@@ -17,7 +17,7 @@
         <tr>
             <td><button class="gird-button">Order</button></td>
             <td><button class="gird-button" @onclick="Menu">Menu</button></td>
-            <td><button class="gird-button">Category</button></td>
+            <td><button class="gird-button" @onclick="Category">Category</button></td>
         </tr>           
         <tr>            
             <td><button class="gird-button">Reports</button></td>
@@ -53,9 +53,9 @@
         navigation.NavigateTo("/menu");
     }
 
-    public void CategorY()
+    public void Category()
     {
-
+        navigation.NavigateTo("/category");
     }
 
     public void Reports()

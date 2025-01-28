@@ -1,4 +1,4 @@
-﻿@page "/menu"
+﻿@page "/category"
 @using CafeEPOS.Shared.Layout
 @layout NoLayout
 @inject NavigationManager navigation
@@ -8,31 +8,30 @@
 @using Models
 @using System.Linq
 
-<PageTitle>Menu</PageTitle>
+<PageTitle>category</PageTitle>
 
 <link rel="stylesheet" href="_content/CafeEPOS.Shared/startingScreenStyles.css" />
 
 <img src="_content/CafeEPOS.Shared/images/ImagePlaceholder.png" width="100" height="100" class="logo" alt="Logo" />
 <h1 style="text-align:center; padding-top:20px">EPOS System </h1>
-<h2 style="text-align:center;">Menu</h2>
+<h2 style="text-align:center;">Category</h2>
 
 
 <div class="container-fluid1">
     <!--Check to see if there are any items-->
     @if (items == null)
     {
-        <p>No Menu Items Found</p>
+        <p>No categoies Found</p>
     }
     else
     {
         <!--If there are items display all items-->
         <QuickGrid Items="items">
-            <PropertyColumn Property="@(x => x.Name)" />
-            <PropertyColumn Property="@(x => x.categoryName)" />
-            <PropertyColumn Property="@(x => x.price)" />
+            <PropertyColumn Property="@(x => x.Name)"/>
+            <PropertyColumn Property="@(x => x.parentName)" Title="Parent Category" />
 
             <TemplateColumn Context="items">
-                <button>Edit</button> 
+                <button>Edit</button>
                 <button>Remove</button>
             </TemplateColumn>
         </QuickGrid>
@@ -49,7 +48,7 @@
 
     [Inject] LocalStorageService _localStorage { get; set; }
 
-    private IQueryable<MenuModel> items = null;
+    private IQueryable<CategoryModel> items = null;
 
     //Get system account token
     public async Task<string> getToken()
@@ -60,9 +59,9 @@
     //On page load retive all menu items from Db
     protected override async Task OnInitializedAsync()
     {
-        var menuServ = new MenuService();
+        var menuServ = new CategoryService();
         var token = await getToken();
-        items = (await menuServ.GetAllMenuItemsCall(token)).AsQueryable();
+        items = (await menuServ.GetAllCategoiesCall(token)).AsQueryable();
 
     }
 }

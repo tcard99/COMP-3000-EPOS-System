@@ -4,6 +4,7 @@ using CafeEposAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Identity.Client;
+using Microsoft.OpenApi.Validations;
 
 namespace CafeEposAPI.Controllers
 {
@@ -52,15 +53,51 @@ namespace CafeEposAPI.Controllers
                     .Select(x => new ReturnMenuItemModel
                     {
                         Id = x.Id,
-                        Name= x.Name,
-                        categoryId= x.categortyId,
-                        categoryName= x.category.Name,
+                        Name = x.Name,
+                        categoryId = x.categortyId,
+                        categoryName = x.category.Name,
                         price = x.price,
                         archived = x.archived
                     });
                 return catMenuItems.ToList();
             }
         }
+
+        //Get single menu item
+        [HttpGet("getSingleMenuItem")]
+        public IEnumerable<ReturnMenuItemModel> GetSingleMenuItem(string sysAccountToken, int itemId)
+        {
+            var foundUser = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == sysAccountToken);
+
+            //Check to see if found user is null
+            if (foundUser == null)
+            {
+                return new List<ReturnMenuItemModel>();
+            }
+
+            //Find specifed menu item
+            var foundItem = _eposDbContext.Menu.Where(x => x.Id == itemId && x.sysAccountId == foundUser.Id && x.archived == 0)
+                .Select(x => new ReturnMenuItemModel
+                {
+                    Id= x.Id,
+                    Name = x.Name,
+                    categoryId= x.categortyId,
+                    categoryName = x.category.Name,
+                    price = x.price,
+                    archived = x.archived
+                });
+
+            //Cjheck to see if item found
+            if (foundItem == null)
+            {
+                return new List<ReturnMenuItemModel>();
+            }
+            else
+            {
+                return foundItem;
+            }
+        }
+
 
         //ADd menu items
         [HttpPost("AddMenuItem")]
@@ -142,7 +179,7 @@ namespace CafeEposAPI.Controllers
                 return false;
             }
 
-            var foundItem = _eposDbContext.Menu.SingleOrDefault( x => x.Id == itemId);
+            var foundItem = _eposDbContext.Menu.SingleOrDefault(x => x.Id == itemId);
 
             if (foundItem == null)
             {

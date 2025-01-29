@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="_content/CafeEPOS.Shared/startingScreenStyles.css" />
 
 <img src="_content/CafeEPOS.Shared/images/ImagePlaceholder.png" width="100" height="100" class="logo" alt="Logo" />
-<h1 style="text-align:center; padding-top:20px">EPOS System </h1>
+<h1 style="text-align:center; padding-top:50px; margin-bottom:175px;">EPOS System</h1>
 
 
 <div class="container-fluid1">
@@ -44,6 +44,14 @@
 
     public string enteredCatName { get; set; }
 
+    public int parentCatId { get; set; }
+
+    public string token { get; set; }
+
+    public CategoryService catService = new CategoryService();
+
+ 
+
     //Get system account token
     public async Task<string> getToken()
     {
@@ -53,5 +61,11 @@
     public void back()
     {
         navigation.NavigateTo("/category");
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        token = await getToken();
+        
     }
 }

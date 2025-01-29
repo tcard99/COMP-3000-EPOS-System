@@ -17,6 +17,7 @@ namespace CafeEPOS.Shared.Services
 
         private static readonly HttpClient _httpClient = new HttpClient();
 
+        //method which calls api to get all categoires for system user
         public async Task<List<CategoryModel>> GetAllCategoiesCall(string sysAccountToken)
         {
             //Set up paramater
@@ -29,6 +30,30 @@ namespace CafeEPOS.Shared.Services
             var response = await _httpClient.GetAsync(url);
 
             //Chcek to see if successful
+            if (response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadFromJsonAsync<List<CategoryModel>>();
+                return data;
+            }
+            else
+            {
+                return new List<CategoryModel>();
+            }
+        }
+
+        //Method to make api call to get all parent categoies
+        public async Task<List<CategoryModel>> GetAllParentCategories(string sysAccountToken)
+        {
+            //Set up Paramater
+            var param = $"sysAccountToken={sysAccountToken}";
+
+            //Set Up URL
+            var url = $"{baseApiUrl}/Category/getParentCategoires?{param}";
+
+            //Send request
+            var response = await _httpClient.GetAsync(url);
+
+            //Check to see if successful
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadFromJsonAsync<List<CategoryModel>>();

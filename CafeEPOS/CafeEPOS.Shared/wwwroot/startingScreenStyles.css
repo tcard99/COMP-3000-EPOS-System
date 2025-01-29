@@ -2,62 +2,69 @@ html, body {
     height: 100%;
     margin: 0;
     overflow: hidden;
+    background-color: #90e0ef;
 }
 
 .loginButton {
     text-align: center;
-    background-color: #9BE265;
+    background-color: #023e8a;
     border-radius: 50px;
     height: 50px;
     width: 250px;
-    border: none
+    border: none;
+    color: white;
+    font-size: 20px;
 }
 
     .loginButton:hover {
-        background-color: #8AC64F;
+        background-color: #03045e;
     }
 
 
 .KDSButton {
     text-align: center;
-    background-color: grey;
+    background-color: #023e8a;
     border-radius: 50px;
     height: 250px;
     width: 250px;
     border: none;
     font-size: 50px;
+    color: white;
 }
 
     .KDSButton:hover {
-        background-color: #8AC64F;
+        background-color: #03045e;
     }
 
 
 .EposButton {
     text-align: center;
-    background-color: grey;
+    background-color: #023e8a;
     border-radius: 50px;
     height: 250px;
     width: 250px;
     border: none;
     font-size: 50px;
+    color: white;
 }
 
     .EposButton:hover {
-        background-color: #8AC64F;
+        background-color: #03045e;
     }
 
 .backButton {
     text-align: center;
-    background-color: #FFA0A0;
+    background-color: #a32cc4;
     border-radius: 50px;
     height: 50px;
     width: 250px;
-    border: none
+    border: none;
+    font-size: 20px;
+    color:white;
 }
 
     .backButton:hover {
-        background-color: #FF7F7F;
+        background-color: #6c3baa;
     }
 
 .systemOptionButtons {
@@ -84,25 +91,30 @@ html, body {
     padding-top: 20px;
 }
 
-.table-containter{
-    flex-grow:1;
-    display:flex;
+.table-containter {
+    flex-grow: 1;
+    display: flex;
     justify-content: center;
     align-items: center;
+    margin-top: 50px;
 }
 
-.gird-button{
-    padding: 10px; 20px;
+.gird-button {
+    padding: 10px;
+    20px;
     border: none;
-    border-radius:100px;
-    text-align:center;
+    border-radius: 100px;
+    text-align: center;
     width: 200px;
-    height:150px;
-    background-color: gray;
+    height: 150px;
+    background-color: #023e8a;
+    font-size: 25px;
+    color:white;
 }
-.gird-button:hover {
-    background-color: #8AC64F;
-}
+
+    .gird-button:hover {
+        background-color: #03045e;
+    }
 
 
 table {

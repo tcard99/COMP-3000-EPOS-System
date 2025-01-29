@@ -48,7 +48,7 @@ namespace CafeEPOS.Shared.Services
             var param = $"sysAccountToken={sysAccountToken}";
 
             //Set Up URL
-            var url = $"{baseApiUrl}/Category/getParentCategoires?{param}";
+            var url = $"{baseApiUrl}Category/getParentCategoires?{param}";
 
             //Send request
             var response = await _httpClient.GetAsync(url);

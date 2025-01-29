@@ -21,12 +21,21 @@
     <h2 style="text-align:center;">Add Category</h2>
 
 
-    <input type="text" placeholder="Enter category name" style="text-align:center; width:50%; border-radius:50px;" @bind="enteredCatName" />
+    <input type="text" placeholder="Enter category name" style="text-align:center; width:50%; border-radius:50px;" @bind="newCatName" />
+    <br />
+    <br />
+
+    <select @bind="parentCatId">
+        @foreach (var cat in parentCategorys)
+        {
+            <option value="@cat.Id">@cat.Name</option>
+        }
+    </select>
 
     <div class="container-fluid1">
         <div class="LoginBackContainer">
             <button class="backButton" @onclick="back">Back</button>
-            <button class="loginButton">Add</button>
+            <button class="loginButton" @onclick="add">Add</button>
         </div>
     </div>
 
@@ -42,15 +51,19 @@
 
     [Inject] LocalStorageService _localStorage { get; set; }
 
-    public string enteredCatName { get; set; }
+    public List<CategoryModel> parentCategorys { get; set; } = new List<CategoryModel>();
 
+    //Selected parent id
     public int parentCatId { get; set; }
+
+    //Inputted cat name
+    public string newCatName { get; set; }
 
     public string token { get; set; }
 
     public CategoryService catService = new CategoryService();
 
- 
+
 
     //Get system account token
     public async Task<string> getToken()
@@ -63,9 +76,15 @@
         navigation.NavigateTo("/category");
     }
 
+    public void add()
+    {
+        JS.InvokeVoidAsync("showAlert", parentCatId);
+    }
+
     protected async override Task OnInitializedAsync()
     {
         token = await getToken();
-        
+        parentCategorys = (await catService.GetAllParentCategories(token)).ToList();
+
     }
 }

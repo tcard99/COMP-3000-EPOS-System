@@ -110,5 +110,8 @@ namespace CafeEPOS.Shared.Services
 
             return await response.Content.ReadFromJsonAsync<bool>();
         }
+
+        //Method to call api to call put method to update category
+
     }
 }

@@ -258,16 +258,25 @@ namespace CafeEposAPI.Controllers
                 return false;
             }
 
-            foundCat.archived = 1;
+            var findItems = _eposDbContext.Category.Any(x => (x.parentId == catId && x.archived == 0) || (x.menuItems.Any(y => y.categortyId == catId && y.archived == 0)));
 
-            try
-            {
-                _eposDbContext.SaveChanges();
-                return true;
-            }
-            catch (Exception ex)
+            if (findItems)
             {
                 return false;
+            }
+            else
+            {
+                foundCat.archived = 1;
+
+                try
+                {
+                    _eposDbContext.SaveChanges();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                }
             }
         }
     }

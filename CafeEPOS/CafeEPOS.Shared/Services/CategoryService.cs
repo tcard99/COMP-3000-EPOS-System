@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Json;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.Marshalling;
 using System.Text;
@@ -112,7 +113,7 @@ namespace CafeEPOS.Shared.Services
         }
 
         //Method to call api to call put method to update category
-        public async Task<bool> UpdateExisitngCategory(string sysAccountToken, int? parentId, int catId ,string catName)
+        public async Task<bool> UpdateExisitngCategory(string sysAccountToken, int? parentId, int catId, string catName)
         {
             //Set up Param
             var param = $"sysAccountToken={sysAccountToken}&catId={catId}";
@@ -126,12 +127,26 @@ namespace CafeEPOS.Shared.Services
                 name = catName,
                 parentId = parentId == 0 ? null : parentId
             };
-            
+
             //SEnd request
             var response = _httpClient.PutAsJsonAsync(url, data);
 
             return await response.Result.Content.ReadFromJsonAsync<bool>();
-            
+
+        }
+
+        //Method to soft delete 
+        public async Task<bool> SoftDeleteCatCall(string sysAccountToken, int catId)
+        {
+            //Set up param
+            var param = $"sysAccountToken={sysAccountToken}&catId={catId}";
+
+            //Set up URL
+            var url = $"{baseApiUrl}Category/SoftDelCategory?{param}";
+
+            var response = _httpClient.PutAsync(url, null);
+
+            return await response.Result.Content.ReadFromJsonAsync<bool>();
         }
     }
 }

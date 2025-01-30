@@ -113,7 +113,7 @@
         token = await getToken();
 
         //Find all parent Categories
-        parentCategorys = (await catService.GetAllParentCategories(token)).ToList();
+        parentCategorys = (await catService.GetAllParentCategories(token)).Where(x => x.Id != int.Parse(passedId)).ToList();
 
         //Find the passed in category
         foundCategory = (await catService.GetSingleCategory(token, int.Parse(passedId))).ToList();

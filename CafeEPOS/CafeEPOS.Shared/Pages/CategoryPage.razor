@@ -28,10 +28,10 @@
         <!--If there are items display all items-->
         <QuickGrid Items="items" Pagination="state">
             <PropertyColumn Property="@(x => x.Name)" />
-            <PropertyColumn Property="@(x => x.parentName)" Title="Parent Category" Sortable="true"/>
+            <PropertyColumn Property="@(x => x.parentName)" Title="Parent Category" Sortable="true" />
 
             <TemplateColumn Context="items">
-                <a><button>Edit</button></a>
+                <button @onclick="() => edit(items.Id)">Edit</button>
                 <button>Remove</button>
             </TemplateColumn>
         </QuickGrid>
@@ -85,5 +85,10 @@
     public void add()
     {
         navigation.NavigateTo("/addCategory");
+    }
+
+    public void edit(int id)
+    {
+        navigation.NavigateTo($"/editCategory/{id}");
     }
 }

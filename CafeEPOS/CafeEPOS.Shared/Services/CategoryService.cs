@@ -65,6 +65,30 @@ namespace CafeEPOS.Shared.Services
             }
         }
 
+        //Method to get a single category
+        public async Task<List<CategoryModel>> GetSingleCategory(string sysAccountToken, int catId)
+        {
+            //Set up param
+            var param = $"sysAccountToken={sysAccountToken}&catId={catId}";
+
+            //Set up URL
+            var url = $"{baseApiUrl}Category/getSingleCategory?{param}";
+
+            //Send request
+            var response = await _httpClient.GetAsync(url);
+
+            //Check if successful
+            if (response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadFromJsonAsync<List<CategoryModel>>();
+                return data;
+            }
+            else
+            {
+                return new List<CategoryModel>();
+            }
+        }
+
         //Method to call api to add new category
         public async Task<bool> AddNewCategory(string sysAccountToken, int? parentId, string catName)
         {

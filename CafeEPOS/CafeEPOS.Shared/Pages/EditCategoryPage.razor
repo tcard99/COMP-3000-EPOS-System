@@ -84,7 +84,26 @@
     //Method to add a new category
     public async void update()
     {
+        var token = await getToken();
 
+        if (newCatName == null || newCatName == "")
+        {
+            await JS.InvokeVoidAsync("showAlert", "Please enter a name");
+        }
+        else
+        {
+            var updatedCat = await catService.UpdateExisitngCategory(token, parentCatId, int.Parse(passedId), newCatName);
+
+            if (updatedCat == true)
+            {
+                navigation.NavigateTo("/category");
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("showAlert", "Failed to updated category");
+                navigation.NavigateTo("/category");
+            }
+        }
     }
 
     //Method to get all parent categories on page load

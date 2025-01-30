@@ -112,6 +112,26 @@ namespace CafeEPOS.Shared.Services
         }
 
         //Method to call api to call put method to update category
+        public async Task<bool> UpdateExisitngCategory(string sysAccountToken, int? parentId, int catId ,string catName)
+        {
+            //Set up Param
+            var param = $"sysAccountToken={sysAccountToken}&catId={catId}";
 
+            //set up URL
+            var url = $"{baseApiUrl}Category/UpdateCategory?{param}";
+
+            //Set up data for passed in model on api
+            var data = new
+            {
+                name = catName,
+                parentId = parentId == 0 ? null : parentId
+            };
+            
+            //SEnd request
+            var response = _httpClient.PutAsJsonAsync(url, data);
+
+            return await response.Result.Content.ReadFromJsonAsync<bool>();
+            
+        }
     }
 }

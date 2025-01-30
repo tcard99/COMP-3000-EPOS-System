@@ -26,15 +26,17 @@
     else
     {
         <!--If there are items display all items-->
-        <QuickGrid Items="items">
+        <QuickGrid Items="items" Pagination="state">
             <PropertyColumn Property="@(x => x.Name)" />
             <PropertyColumn Property="@(x => x.parentName)" Title="Parent Category" Sortable="true"/>
 
             <TemplateColumn Context="items">
-                <button>Edit</button>
+                <a><button>Edit</button></a>
                 <button>Remove</button>
             </TemplateColumn>
         </QuickGrid>
+
+        <Paginator State="state" />
     }
 
     <div class="container-fluid1">
@@ -57,6 +59,8 @@
     [Inject] LocalStorageService _localStorage { get; set; }
 
     private IQueryable<CategoryModel> items = null;
+
+    PaginationState state = new PaginationState() { ItemsPerPage = 10 };
 
     //Get system account token
     public async Task<string> getToken()

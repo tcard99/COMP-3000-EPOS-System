@@ -64,5 +64,27 @@ namespace CafeEPOS.Shared.Services
                 return new List<CategoryModel>();
             }
         }
+
+        //Method to call api to add new category
+        public async Task<bool> AddNewCategory(string sysAccountToken, int? parentId, string catName)
+        {
+            //Set up paramter
+            var param = $"sysAccountToken={sysAccountToken}";
+
+            //Set up URL
+            var url = $"{baseApiUrl}Category/addNewCategory?{param}";
+
+            //Add data for api to recive
+            var data = new
+            {
+                name = catName,
+                parentId = parentId == 0 ? null : parentId,
+            };
+
+            //Send request
+            var response = await _httpClient.PostAsJsonAsync(url, data);
+
+            return await response.Content.ReadFromJsonAsync<bool>();
+        }
     }
 }

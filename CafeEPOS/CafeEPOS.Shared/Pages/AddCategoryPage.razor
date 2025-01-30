@@ -17,20 +17,20 @@
 
 
 <div class="container-fluid1">
+    <h2 style="text-align:center;">Add Category</h2
 
-    <h2 style="text-align:center;">Add Category</h2>
-
-
-    <input type="text" placeholder="Enter category name" style="text-align:center; width:50%; border-radius:50px;" @bind="newCatName" />
-    <br />
-    <br />
-
-    <select @bind="parentCatId">
+    <select class="CatDropDown" @bind="parentCatId">
+        <option value="">Choose if not parent</option>
         @foreach (var cat in parentCategorys)
         {
             <option value="@cat.Id">@cat.Name</option>
         }
     </select>
+
+    <br />
+
+    <input type="text" placeholder="Enter category name" style="text-align:center; width:50%; border-radius:50px;" @bind="newCatName" />
+
 
     <div class="container-fluid1">
         <div class="LoginBackContainer">
@@ -51,6 +51,7 @@
 
     [Inject] LocalStorageService _localStorage { get; set; }
 
+    //Store found parent categorys
     public List<CategoryModel> parentCategorys { get; set; } = new List<CategoryModel>();
 
     //Selected parent id
@@ -71,16 +72,39 @@
         return await _localStorage.GetValue("okten");
     }
 
+    //Method to go back to previous page
     public void back()
     {
         navigation.NavigateTo("/category");
     }
 
-    public void add()
+    //Method to add a new category
+    public async void add()
     {
-        JS.InvokeVoidAsync("showAlert", parentCatId);
+        //Check to see if a name has been entered
+        if (newCatName == null || newCatName == "")
+        {
+            await JS.InvokeVoidAsync("showAlert", "Please enter a name");
+        }
+        else
+        {
+            //Call new category service
+            var newCat = await catService.AddNewCategory(token, parentCatId, newCatName);
+
+            ///Check to see if succssful
+            if (newCat == true)
+            {
+                navigation.NavigateTo("/category");
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("showAlert", "Failed to add new category");
+                navigation.NavigateTo("/category");
+            }
+        }
     }
 
+    //Method to get all parent categories on page load
     protected async override Task OnInitializedAsync()
     {
         token = await getToken();

@@ -28,7 +28,7 @@
         <!--If there are items display all items-->
         <QuickGrid Items="items">
             <PropertyColumn Property="@(x => x.Name)" />
-            <PropertyColumn Property="@(x => x.parentName)" Title="Parent Category" />
+            <PropertyColumn Property="@(x => x.parentName)" Title="Parent Category" Sortable="true"/>
 
             <TemplateColumn Context="items">
                 <button>Edit</button>

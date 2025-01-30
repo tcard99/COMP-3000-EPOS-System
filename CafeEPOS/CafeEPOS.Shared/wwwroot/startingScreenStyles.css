@@ -60,7 +60,7 @@ html, body {
     width: 250px;
     border: none;
     font-size: 20px;
-    color:white;
+    color: white;
 }
 
     .backButton:hover {
@@ -109,7 +109,7 @@ html, body {
     height: 150px;
     background-color: #023e8a;
     font-size: 25px;
-    color:white;
+    color: white;
 }
 
     .gird-button:hover {
@@ -123,4 +123,12 @@ table {
 
 td {
     padding: 20px;
+}
+
+.CatDropDown {
+    text-align:center;
+    height:50px;
+    border-radius:50px;
+    width:25%;
+    font-size:25px;
 }

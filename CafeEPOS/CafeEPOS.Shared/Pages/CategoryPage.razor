@@ -99,7 +99,14 @@
         }
         else
         {
-            await JS.InvokeVoidAsync("showAlert", "Deletion Failed");
+            if (FF.GetFormFactor().StartsWith("Web"))
+            {
+                await JS.InvokeVoidAsync("showAlert", "Deletion Failed");
+            }
+            else
+            {
+                await Application.Current.MainPage.DisplayAlert("Alert", "Deletion Failed", "OK");
+            }
         }
     }
 

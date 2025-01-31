@@ -1,4 +1,4 @@
-﻿@page "/editCategory/{passedId}"
+﻿@page "/addMenu"
 @using CafeEPOS.Shared.Layout
 @layout NoLayout
 @inject NavigationManager navigation
@@ -8,7 +8,7 @@
 @using Models
 @using System.Linq
 
-<PageTitle> Edit Category</PageTitle>
+<PageTitle> Add Menu</PageTitle>
 
 <link rel="stylesheet" href="_content/CafeEPOS.Shared/startingScreenStyles.css" />
 
@@ -17,11 +17,11 @@
 
 
 <div class="container-fluid1">
-    <h2 style="text-align:center;">Edit Category</h2>
+    <h2 style="text-align:center;">Add Menu</h2
 
-    <select class="CatDropDown" @bind="parentCatId">
-        <option value="">Choose if not parent</option>
-        @foreach (var cat in parentCategorys)
+    <select class="CatDropDown" @bind="catId">
+        <option value="">Choose Category</option>
+        @foreach (var cat in Categorys)
         {
             <option value="@cat.Id">@cat.Name</option>
         }
@@ -29,13 +29,17 @@
 
     <br />
 
-    <input type="text" placeholder="Enter category name" style="text-align:center; width:50%; border-radius:50px;" @bind="newCatName" />
+    <input type="text" placeholder="Enter category name" style="text-align:center; width:50%; border-radius:50px;" @bind="newMenuName" />
+
+    <br />
+
+    <input type="number" placeholder="Enter Price" @bind="newMenuPrice" />
 
 
     <div class="container-fluid1">
         <div class="LoginBackContainer">
             <button class="backButton" @onclick="back">Back</button>
-            <button class="loginButton" @onclick="update">Update</button>
+            <button class="loginButton" @onclick="add">Add</button>
         </div>
     </div>
 
@@ -51,22 +55,20 @@
 
     [Inject] LocalStorageService _localStorage { get; set; }
 
-
     //Store found parent categorys
-    public List<CategoryModel> parentCategorys { get; set; } = new List<CategoryModel>();
-    public List<CategoryModel> foundCategory { get; set; } = new List<CategoryModel>();
+    public List<CategoryModel> Categorys { get; set; } = new List<CategoryModel>();
 
-    [Parameter] public string passedId { get; set; }
     //Selected parent id
-    public int? parentCatId { get; set; }
+    public int catId { get; set; }
 
     //Inputted cat name
-    public string newCatName { get; set; }
+    public string newMenuName { get; set; }
+    public string newMenuPrice { get; set; }
 
     public string token { get; set; }
 
     public CategoryService catService = new CategoryService();
-
+    public MenuService menuServ = new MenuService();
 
 
     //Get system account token
@@ -78,15 +80,14 @@
     //Method to go back to previous page
     public void back()
     {
-        navigation.NavigateTo("/category");
+        navigation.NavigateTo("/menu");
     }
 
     //Method to add a new category
-    public async void update()
+    public async void add()
     {
-        var token = await getToken();
-
-        if (newCatName == null || newCatName == "")
+        //Check to see if a name has been entered
+        if (newMenuName == null || newMenuName == "")
         {
             if (FF.GetFormFactor().StartsWith("Web"))
             {
@@ -99,23 +100,37 @@
         }
         else
         {
-            var updatedCat = await catService.UpdateExisitngCategory(token, parentCatId, int.Parse(passedId), newCatName);
-
-            if (updatedCat == true)
-            {
-                navigation.NavigateTo("/category");
-            }
-            else
+            if (catId == 0)
             {
                 if (FF.GetFormFactor().StartsWith("Web"))
                 {
-                    await JS.InvokeVoidAsync("showAlert", "Failed to update");
+                    await JS.InvokeVoidAsync("showAlert", "Please select a category");
                 }
                 else
                 {
-                    await Application.Current.MainPage.DisplayAlert("Alert", "Failed to update", "OK");
+                    await Application.Current.MainPage.DisplayAlert("Alert", "Please select a category", "OK");
                 }
-                navigation.NavigateTo("/category");
+            }
+            else
+            {
+                //Call new menu service
+                var newItem = await menuServ.AddNewMenuItem(token, newMenuName, catId, newMenuPrice);
+                if (newItem == true)
+                {
+                    navigation.NavigateTo("/menu");
+                }
+                else
+                {
+                    if (FF.GetFormFactor().StartsWith("Web"))
+                    {
+                        await JS.InvokeVoidAsync("showAlert", "Failed to add new Item");
+                    }
+                    else
+                    {
+                        await Application.Current.MainPage.DisplayAlert("Alert", "Failed to add new Item", "OK");
+                    }
+                    navigation.NavigateTo("/menu");
+                }
             }
         }
     }
@@ -123,17 +138,8 @@
     //Method to get all parent categories on page load
     protected async override Task OnInitializedAsync()
     {
-        //Get Token
         token = await getToken();
+        Categorys = (await catService.GetAllCategoiesCall (token)).ToList();
 
-        //Find all parent Categories
-        parentCategorys = (await catService.GetAllParentCategories(token)).Where(x => x.Id != int.Parse(passedId)).ToList();
-
-        //Find the passed in category
-        foundCategory = (await catService.GetSingleCategory(token, int.Parse(passedId))).ToList();
-
-        //Set value of name and parent category to found values
-        newCatName = foundCategory.FirstOrDefault().Name;
-        parentCatId = foundCategory.FirstOrDefault().parentId;
     }
 }

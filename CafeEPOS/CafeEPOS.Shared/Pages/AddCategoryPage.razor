@@ -84,7 +84,14 @@
         //Check to see if a name has been entered
         if (newCatName == null || newCatName == "")
         {
-            await JS.InvokeVoidAsync("showAlert", "Please enter a name");
+              if (FF.GetFormFactor().StartsWith("Web"))
+            {
+                await JS.InvokeVoidAsync("showAlert", "Please enter a name");
+            }
+            else
+            {
+                await Application.Current.MainPage.DisplayAlert("Alert", "Please enter a name", "OK");
+            }
         }
         else
         {
@@ -98,7 +105,14 @@
             }
             else
             {
-                await JS.InvokeVoidAsync("showAlert", "Failed to add new category");
+                  if (FF.GetFormFactor().StartsWith("Web"))
+            {
+                await JS.InvokeVoidAsync("showAlert", "failed to add category");
+            }
+            else
+            {
+                await Application.Current.MainPage.DisplayAlert("Alert", "failed to add category", "OK");
+            }
                 navigation.NavigateTo("/category");
             }
         }

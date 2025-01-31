@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Json;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -37,6 +38,27 @@ namespace CafeEPOS.Shared.Services
             {
                 return new List<MenuModel>();
             }
+        }
+
+        //Method to add a new menu item
+        public async Task<bool> AddNewMenuItem(string sysAccountToken, string itemName, int catId, string price)
+        {
+            //Set up param
+            var param = $"sysAccountToken={sysAccountToken}";
+
+            //Set up URL
+            var url = $"{baseApiUrl}Menu/AddMenuItem?{param}";
+
+            var data = new
+            {
+                name = itemName,
+                catagoryId = catId,
+                price = price
+            };
+
+            var response = await _httpClient.PostAsJsonAsync(url, data);
+
+            return await response.Content.ReadFromJsonAsync<bool>();
         }
     }
 }

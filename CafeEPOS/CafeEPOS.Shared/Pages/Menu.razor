@@ -26,9 +26,9 @@
     else
     {
         <!--If there are items display all items-->
-        <QuickGrid Items="items">
+        <QuickGrid Items="items" Pagination="state">
             <PropertyColumn Property="@(x => x.Name)" />
-            <PropertyColumn Property="@(x => x.categoryName)" />
+            <PropertyColumn Property="@(x => x.categoryName)" Sortable="true" />
             <PropertyColumn Property="@(x => x.price)" />
 
             <TemplateColumn Context="items">
@@ -36,12 +36,14 @@
                 <button>Remove</button>
             </TemplateColumn>
         </QuickGrid>
+
+        <Paginator State="state" />
     }
 
     <div class="container-fluid1">
         <div class="LoginBackContainer">
             <button class="backButton" @onclick="back">Back</button>
-            <button class="loginButton">Add</button>
+            <button class="loginButton" @onclick="add">Add</button>
         </div>
     </div>
 </div>
@@ -57,6 +59,8 @@
     [Inject] LocalStorageService _localStorage { get; set; }
 
     private IQueryable<MenuModel> items = null;
+
+    PaginationState state = new PaginationState() { ItemsPerPage = 10 };
 
     //Get system account token
     public async Task<string> getToken()
@@ -76,5 +80,10 @@
     public void back()
     {
         navigation.NavigateTo("/EposDash");
+    }
+
+    public void add()
+    {
+        navigation.NavigateTo("/addMenu");
     }
 }

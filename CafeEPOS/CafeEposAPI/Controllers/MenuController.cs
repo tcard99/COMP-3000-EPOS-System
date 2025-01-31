@@ -2,6 +2,7 @@
 using CafeEposAPI.Data.Entity;
 using CafeEposAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Identity.Client;
 using Microsoft.OpenApi.Validations;

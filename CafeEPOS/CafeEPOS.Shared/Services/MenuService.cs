@@ -40,6 +40,21 @@ namespace CafeEPOS.Shared.Services
             }
         }
 
+        //MEthod to get single menu item
+        public async Task<List<MenuModel>> GetSingleMenuItem(string sysAccountToken, int itemId)
+        {
+            //Set up param
+            var param = $"sysAccountToken={sysAccountToken}&itemId={itemId}";
+
+            //Set up URL
+            var url = $"{baseApiUrl}Menu/getSingleMenuItem?{param}";
+
+            var response = _httpClient.GetAsync(url);
+
+            var data = await response.Result.Content.ReadFromJsonAsync<List<MenuModel>>();
+            return data;
+        }
+
         //Method to add a new menu item
         public async Task<bool> AddNewMenuItem(string sysAccountToken, string itemName, int catId, string price)
         {
@@ -59,6 +74,34 @@ namespace CafeEPOS.Shared.Services
             var response = await _httpClient.PostAsJsonAsync(url, data);
 
             return await response.Content.ReadFromJsonAsync<bool>();
+        }
+
+        //Method to update menu item
+        public async Task<bool> UpdateMenuItem(string sysAccountToken, int itemId, string itemName, int catId, string price)
+        {
+            //Set up param
+            var param = $"sysAccountToken={sysAccountToken}&itemId={itemId}";
+
+            //set up URL
+            var url = $"{baseApiUrl}Menu/UpdateMenuItem?{param}";
+
+            var data = new
+            {
+                name = itemName,
+                catagoryId = catId,
+                price = price
+            };
+
+            var response = _httpClient.PutAsJsonAsync(url, data);
+
+            if (response.Result.IsSuccessStatusCode)
+            {
+                return await response.Result.Content.ReadFromJsonAsync<bool>();
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

@@ -32,7 +32,7 @@
             <PropertyColumn Property="@(x => x.price)" />
 
             <TemplateColumn Context="items">
-                <button>Edit</button>
+                <button @onclick="() => edit(items.Id)">Edit</button>
                 <button>Remove</button>
             </TemplateColumn>
         </QuickGrid>
@@ -85,5 +85,10 @@
     public void add()
     {
         navigation.NavigateTo("/addMenu");
+    }
+
+    public void edit(int id)
+    {
+        navigation.NavigateTo($"editMenu/{id}");
     }
 }

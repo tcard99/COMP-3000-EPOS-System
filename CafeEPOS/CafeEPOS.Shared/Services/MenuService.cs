@@ -1,6 +1,7 @@
 ﻿using CafeEPOS.Shared.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net.Http.Json;
 using System.Reflection.Metadata.Ecma335;
@@ -93,6 +94,25 @@ namespace CafeEPOS.Shared.Services
             };
 
             var response = _httpClient.PutAsJsonAsync(url, data);
+
+            if (response.Result.IsSuccessStatusCode)
+            {
+                return await response.Result.Content.ReadFromJsonAsync<bool>();
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        //MEthod to soft delete menu item
+        public async Task<bool> SoftDeleteMenuItem(string sysAccountId, int itemId)
+        {
+            var param = $"sysAccountToken={sysAccountId}&itemId={itemId}";
+
+            var url = $"{baseApiUrl}Menu/SoftDelMenuItem?{param}";
+
+            var response = _httpClient.PutAsync(url, null);
 
             if (response.Result.IsSuccessStatusCode)
             {

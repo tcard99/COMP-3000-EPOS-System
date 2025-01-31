@@ -33,7 +33,7 @@
 
             <TemplateColumn Context="items">
                 <button @onclick="() => edit(items.Id)">Edit</button>
-                <button>Remove</button>
+                <button @onclick="() => remove(items.Id)">Remove</button>
             </TemplateColumn>
         </QuickGrid>
 
@@ -62,6 +62,8 @@
 
     PaginationState state = new PaginationState() { ItemsPerPage = 10 };
 
+    public MenuService menuServ = new MenuService();
+
     //Get system account token
     public async Task<string> getToken()
     {
@@ -71,7 +73,6 @@
     //On page load retive all menu items from Db
     protected override async Task OnInitializedAsync()
     {
-        var menuServ = new MenuService();
         var token = await getToken();
         items = (await menuServ.GetAllMenuItemsCall(token)).AsQueryable();
 
@@ -90,5 +91,27 @@
     public void edit(int id)
     {
         navigation.NavigateTo($"editMenu/{id}");
+    }
+
+    public async void remove(int id)
+    {
+        var token = await getToken();
+        var result = await menuServ.SoftDeleteMenuItem(token, id);
+
+        if (result == true)
+        {
+            navigation.NavigateTo("/EposDash");
+        }
+        else
+        {
+            if (FF.GetFormFactor().StartsWith("Web"))
+            {
+                await JS.InvokeVoidAsync("showAlert", "Deletion Failed");
+            }
+            else
+            {
+                await Application.Current.MainPage.DisplayAlert("Alert", "Deletion Failed", "OK");
+            }
+        }
     }
 }

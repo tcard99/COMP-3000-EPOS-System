@@ -189,7 +189,15 @@ namespace CafeEposAPI.Controllers
 
             foundItem.archived = 1;
 
-            return false;
+            try
+            {
+                _eposDbContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
     }
 }

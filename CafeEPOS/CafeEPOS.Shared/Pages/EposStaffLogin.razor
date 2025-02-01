@@ -76,7 +76,15 @@
             else
             {
                 await _localStorage.StoreValue("role", login.FirstOrDefault().role.ToString());
+
+                if (login.FirstOrDefault().role == 0)
+                {
+                    navigation.NavigateTo("/StdEposDash");
+                }
+                else if (login.FirstOrDefault().role == 1)
+                {
                 navigation.NavigateTo("/EposDash");
+                }
             }
         }
     }

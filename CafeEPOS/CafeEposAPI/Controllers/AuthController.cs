@@ -34,24 +34,31 @@ namespace CafeEposAPI.Controllers
         }
 
         [HttpPost("StaffLogin")]
-        public bool StaffLogin(StaffLoginModel staffLogin)
+        public IEnumerable<ReturnStaffAuthModel> StaffLogin(StaffLoginModel staffLogin)
         {
             var userId = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == staffLogin.token);
 
             if (userId == null)
             {
-                return false;
+                return new List<ReturnStaffAuthModel>();
             }
 
             var user = _eposDbContext.StaffAccounts.SingleOrDefault(x => x.staffId == staffLogin.staffId && x.passcode == staffLogin.passcode && x.sysAccountId == userId.Id);
 
+
             if (user != null)
             {
-                return true;
+                var returnData = new ReturnStaffAuthModel
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    role = user.role
+                };
+                return new List<ReturnStaffAuthModel> { returnData };
             }
             else
             {
-                return false;
+                return new List<ReturnStaffAuthModel>();
             }
 
         }

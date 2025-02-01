@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using CafeEPOS.Shared.Models;
+using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,7 +58,7 @@ namespace CafeEPOS.Shared.Services
         }
 
         //Method to call the staff login method on API
-        public async Task<bool> StaffLogin(string token, string userId, string passcode)
+        public async Task<List<StaffAuthLoginReturnModel>> StaffLogin(string token, string userId, string passcode)
         {
             var data = new
             {
@@ -68,7 +69,7 @@ namespace CafeEPOS.Shared.Services
 
             var response = await _httpClient.PostAsJsonAsync(baseApiUrl + "Auth/StaffLogin", data);
 
-            return await response.Content.ReadFromJsonAsync<bool>();
+            return await response.Content.ReadFromJsonAsync<List<StaffAuthLoginReturnModel>>();
         }
 
     }

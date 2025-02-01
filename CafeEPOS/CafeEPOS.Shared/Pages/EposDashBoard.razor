@@ -78,6 +78,7 @@
     //Logout button method
     public void logout()
     {
+        _localStorage.RemoveValue("role");
         navigation.NavigateTo("/EposStaffLogin");
     }
 

@@ -62,7 +62,7 @@
 
             var login = await authService.StaffLogin(token, usernameVal, passwordVal);
 
-            if (login == false)
+            if (login.Count() == 0)
             {
                 if (FF.GetFormFactor().StartsWith("Web"))
                 {
@@ -75,6 +75,7 @@
             }
             else
             {
+                await _localStorage.StoreValue("role", login.FirstOrDefault().role.ToString());
                 navigation.NavigateTo("/EposDash");
             }
         }

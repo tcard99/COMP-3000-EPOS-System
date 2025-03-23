@@ -14,6 +14,8 @@ namespace CafeEposAPI.Data
         public DbSet<staffLoginEntity> StaffAccounts { get; set; }
         public DbSet<menuEntity> Menu { get; set; }
         public DbSet<categoryEntity> Category { get; set; }
+        public DbSet<OrderInfoEntity> OrderInfo { get; set; }
+        public DbSet<OrderItemsEntity> OrderItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

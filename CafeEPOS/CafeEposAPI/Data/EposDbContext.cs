@@ -28,6 +28,11 @@ namespace CafeEposAPI.Data
                 .HasOne(e => e.parentCategory)
                 .WithMany()
                 .HasForeignKey(e => e.parentId);
+
+            modelBuilder.Entity<OrderItemsEntity>()
+                .HasOne(e => e.OrderInfo)
+                .WithMany(e => e.items)
+                .HasForeignKey(e => e.OrderId);
         }
     }
 }

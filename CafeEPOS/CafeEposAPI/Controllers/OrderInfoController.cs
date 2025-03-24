@@ -48,5 +48,7 @@ namespace CafeEposAPI.Controllers
                 }
             }
         }
+
+        //Method to create new order with or without items
     }
 }

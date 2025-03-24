@@ -12,5 +12,7 @@ namespace CafeEposAPI.Data.Entity
         public int OrderId { get; set; }
         public string Name { get; set; }
         public string price { get; set; }
+        public string status { get; set; }
+        public OrderInfoEntity OrderInfo { get; set; }
     }
 }

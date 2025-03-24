@@ -1,4 +1,5 @@
 ﻿using Microsoft.Identity.Client;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -15,5 +16,6 @@ namespace CafeEposAPI.Data.Entity
         public string date { get; set; }
         public string status { get; set; }
         public string total { get; set; }
+        public Collection<OrderItemsEntity> items { get; set; } = [];
     }
 }

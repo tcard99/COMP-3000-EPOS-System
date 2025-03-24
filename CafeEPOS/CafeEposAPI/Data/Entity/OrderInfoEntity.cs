@@ -13,7 +13,7 @@ namespace CafeEposAPI.Data.Entity
         public int sysAccountId { get; set; }
         public string waiterName { get; set; }
         public string? table {  get; set; }
-        public string date { get; set; }
+        public DateTime date { get; set; }
         public string status { get; set; }
         public string total { get; set; }
         public Collection<OrderItemsEntity> items { get; set; } = [];

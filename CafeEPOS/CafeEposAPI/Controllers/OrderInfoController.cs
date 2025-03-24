@@ -1,6 +1,8 @@
 ﻿using CafeEposAPI.Data;
 using CafeEposAPI.Data.Entity;
+using CafeEposAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using System.Reflection.Metadata.Ecma335;
 
 namespace CafeEposAPI.Controllers
@@ -50,5 +52,10 @@ namespace CafeEposAPI.Controllers
         }
 
         //Method to create new order with or without items
+        [HttpPost("MakeOrder")]
+        public string MakeOrder(string sysAccountToken, MakeOrderModel orderModel)
+        {
+            return string.Empty;
+        }
     }
 }

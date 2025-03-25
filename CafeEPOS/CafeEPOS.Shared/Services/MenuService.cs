@@ -57,7 +57,7 @@ namespace CafeEPOS.Shared.Services
         }
 
         //Method to add a new menu item
-        public async Task<bool> AddNewMenuItem(string sysAccountToken, string itemName, int catId, string price)
+        public async Task<bool> AddNewMenuItem(string sysAccountToken, string itemName, int catId, decimal price)
         {
             //Set up param
             var param = $"sysAccountToken={sysAccountToken}";
@@ -78,7 +78,7 @@ namespace CafeEPOS.Shared.Services
         }
 
         //Method to update menu item
-        public async Task<bool> UpdateMenuItem(string sysAccountToken, int itemId, string itemName, int catId, string price)
+        public async Task<bool> UpdateMenuItem(string sysAccountToken, int itemId, string itemName, int catId, decimal price)
         {
             //Set up param
             var param = $"sysAccountToken={sysAccountToken}&itemId={itemId}";

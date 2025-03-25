@@ -64,7 +64,7 @@
 
     //Inputted cat name
     public string newMenuName { get; set; }
-    public string newMenuPrice { get; set; }
+    public decimal newMenuPrice { get; set; }
 
     public string token { get; set; }
 
@@ -114,7 +114,7 @@
                     await Application.Current.MainPage.DisplayAlert("Alert", "Please select a category", "OK");
                 }
             }
-            if (newMenuPrice == null || newMenuPrice == "")
+            if (newMenuPrice == null)
             {
                 if (FF.GetFormFactor().StartsWith("Web"))
                 {

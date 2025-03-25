@@ -70,7 +70,7 @@ namespace CafeEposAPI.Controllers
                 table = orderModel.Table,
                 date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0),
                 status = "Ordering",
-                total = "0.00"
+                total = 0.00m
             };
 
             foreach (var item in orderModel.Items)
@@ -84,22 +84,21 @@ namespace CafeEposAPI.Controllers
                     status = "Ordering"
                 };
 
-                //data.total += menuItem.price;
+                data.total += menuItem.price;
 
                 data.items.Add(orderIt);
             }
 
-            _eposDbContext.OrderInfo.Add(data);
-            _eposDbContext.SaveChanges();
 
             var order = new MakeOrderReturnModel
             {
                 Id = data.Id
             };
+
+            _eposDbContext.OrderInfo.Add(data);
+            _eposDbContext.SaveChanges();
+
             return order;
-
-
-            return new MakeOrderReturnModel();
         }
     }
 }

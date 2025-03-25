@@ -13,7 +13,7 @@ namespace CafeEPOS.Shared.Models
         public string Name { get; set; }
         public int categoryId { get; set; }
         public string categoryName { get; set; }
-        public string price { get; set; }
+        public decimal price { get; set; }
         public int archived { get; set; }
     }
 }

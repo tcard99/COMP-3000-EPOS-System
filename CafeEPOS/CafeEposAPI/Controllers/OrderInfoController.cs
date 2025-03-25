@@ -53,13 +53,13 @@ namespace CafeEposAPI.Controllers
 
         //Method to create new order with or without items
         [HttpPost("MakeOrder")]
-        public bool MakeOrder(string sysAccountToken, MakeOrderModel orderModel)
+        public MakeOrderReturnModel MakeOrder(string sysAccountToken, MakeOrderModel orderModel)
         {
             var foundUser = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == sysAccountToken);
 
-            if ( foundUser == null)
+            if (foundUser == null)
             {
-                return false;
+                return new MakeOrderReturnModel();
             }
 
             //Fill in info for the orderInfo table 
@@ -69,11 +69,37 @@ namespace CafeEposAPI.Controllers
                 waiterName = orderModel.WaiterName,
                 table = orderModel.Table,
                 date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0),
-                status = "Not Sent",
+                status = "Ordering",
                 total = "0.00"
             };
 
-            return false;
+            foreach (var item in orderModel.Items)
+            {
+                var menuItem = _eposDbContext.Menu.Single(x => x.Id == item.ItemId);
+                var orderIt = new OrderItemsEntity
+                {
+                    sysAccountId = foundUser.Id,
+                    Name = menuItem.Name,
+                    price = menuItem.price,
+                    status = "Ordering"
+                };
+
+                //data.total += menuItem.price;
+
+                data.items.Add(orderIt);
+            }
+
+            _eposDbContext.OrderInfo.Add(data);
+            _eposDbContext.SaveChanges();
+
+            var order = new MakeOrderReturnModel
+            {
+                Id = data.Id
+            };
+            return order;
+
+
+            return new MakeOrderReturnModel();
         }
     }
 }

@@ -11,11 +11,11 @@ namespace CafeEposAPI.Data.Entity
         [Key]
         public int Id { get; set; }
         public int sysAccountId { get; set; }
-        public string waiterName { get; set; }
+        public required string waiterName { get; set; }
         public string? table {  get; set; }
         public DateTime date { get; set; }
-        public string status { get; set; }
-        public string total { get; set; }
+        public required string status { get; set; }
+        public required string total { get; set; }
         public Collection<OrderItemsEntity> items { get; set; } = [];
     }
 }

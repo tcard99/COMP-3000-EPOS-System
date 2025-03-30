@@ -2,7 +2,9 @@
 using CafeEposAPI.Data.Entity;
 using CafeEposAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
+using Microsoft.VisualBasic;
 using System.Reflection.Metadata.Ecma335;
 
 namespace CafeEposAPI.Controllers
@@ -73,8 +75,10 @@ namespace CafeEposAPI.Controllers
                 total = 0.00m
             };
 
+            //Go through all the items passed in 
             foreach (var item in orderModel.Items)
             {
+                //Find item fill in info 
                 var menuItem = _eposDbContext.Menu.Single(x => x.Id == item.ItemId);
                 var orderIt = new OrderItemsEntity
                 {
@@ -95,10 +99,132 @@ namespace CafeEposAPI.Controllers
                 Id = data.Id
             };
 
+            //save to db 
             _eposDbContext.OrderInfo.Add(data);
             _eposDbContext.SaveChanges();
 
             return order;
+        }
+
+        //Mehtod to change status to Preparing
+        [HttpPut("ChangeStatPreparing")]
+        public bool ChangeStatusToPreparing(string sysAccountToken, int orderId)
+        {
+            var foundUser = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == sysAccountToken);
+
+            if (foundUser == null)
+            {
+                return false;
+            }
+
+            //Find passed in order and its items 
+            var foundOrderInfo = _eposDbContext.OrderInfo.Include(x => x.items).SingleOrDefault(x => x.Id == orderId);
+
+
+
+            if (foundOrderInfo == null)
+            {
+                return false;
+            }
+
+            //Change the status to Preparing
+            foundOrderInfo.status = "Preparing";
+
+            //Go and change status of all items that have the ordering status
+            foreach (var item in foundOrderInfo.items.Where(x => x.status == "Ordering"))
+            {
+                item.status = "Preparing";
+            }
+
+            try
+            {
+                _eposDbContext.SaveChanges();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        //Method to change status to Prepared
+        [HttpPut("ChangeStatPrepared")]
+        public bool ChangeStatusPrepared(string sysAccountToken, int orderId)
+        {
+            var foundUser = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == sysAccountToken);
+
+            if (foundUser == null)
+            {
+                return false;
+            }
+
+            //Find order with passed in id and its items
+            var foundOrderInfo = _eposDbContext.OrderInfo.Include(x => x.items).SingleOrDefault(x => x.Id == orderId);
+
+            if (foundOrderInfo == null)
+            {
+                return false;
+            }
+
+            //Change status to Prepared 
+            foundOrderInfo.status = "Prepared";
+
+            foreach (var item in foundOrderInfo.items.Where(x => x.status == "Preparing"))
+            {
+                //Chaneg item status to Prepared
+                item.status = "Prepared";
+            }
+
+            try
+            {
+                _eposDbContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        //Method to change status to paid
+        [HttpPut("ChanegStatPaid")]
+        public bool ChangeStatusPaid(string sysAccountToken, int orderId)
+        {
+            var foundUser = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == sysAccountToken);
+
+            if (foundUser == null)
+            {
+                return false;
+            }
+
+            //Fidn passed in order and its items
+            var foundOrderInfo = _eposDbContext.OrderInfo.Include(x => x.items).SingleOrDefault(x => x.Id == orderId);
+
+            if (foundOrderInfo == null)
+            {
+                return false;
+            }
+
+            //Chaneg the status to paid
+            foundOrderInfo.status = "Paid";
+
+            //For each item change status to paid
+            foreach (var item in foundOrderInfo.items.Where(x => x.status == "Prepared"))
+            {
+                item.status = "Paid";
+            }
+
+            try
+            {
+                _eposDbContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
         }
     }
 }

@@ -15,6 +15,7 @@ namespace CafeEposAPI.Data.Entity
         public string? table {  get; set; }
         public DateTime date { get; set; }
         public required string status { get; set; }
+        public decimal ammountPaid { get; set; }
         public required decimal total { get; set; }
         public Collection<OrderItemsEntity> items { get; set; } = [];
     }

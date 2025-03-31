@@ -13,6 +13,8 @@ namespace CafeEposAPI.Data.Entity
         public string Name { get; set; }
         public decimal price { get; set; }
         public string status { get; set; }
+        public DateTime placed { get; set; }
+        public DateTime updated { get; set; }
         public OrderInfoEntity OrderInfo { get; set; }
     }
 }

@@ -108,6 +108,62 @@ namespace CafeEposAPI.Controllers
             return order;
         }
 
+        //Method to add new items
+        [HttpPost("AddNewItems")]
+        public MakeOrderReturnModel AddMoreItems(string SysAccountToken, int orderId, List<OrderItemsMakeOrderModel> newItems)
+        {
+            var foundUser = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == SysAccountToken);
+
+            if (foundUser == null)
+            {
+                return new MakeOrderReturnModel();
+            }
+
+            //FInd passed in order
+            var foundOrderInfo = _eposDbContext.OrderInfo.SingleOrDefault(x => x.Id == orderId);
+
+            if (foundOrderInfo == null)
+            {
+                return new MakeOrderReturnModel();
+            }
+
+            //Chaneg status 
+            foundOrderInfo.status = "Preparing";
+
+            //Add all new items
+            foreach (var item in newItems)
+            {
+                var menuItem = _eposDbContext.Menu.Single(x => x.Id == item.ItemId);
+                var orderIt = new OrderItemsEntity
+                {
+                    sysAccountId = foundUser.Id,
+                    Name = menuItem.Name,
+                    price = menuItem.price,
+                    status = "Preparing",
+                    placed = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0),
+                    updated = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0)
+                };
+
+                //Calculate new total 
+                foundOrderInfo.total += menuItem.price;
+
+                //Add new items to order
+                foundOrderInfo.items.Add(orderIt);
+            }
+
+            var order = new MakeOrderReturnModel
+            {
+                Id = foundOrderInfo.Id
+            };
+
+            _eposDbContext.SaveChanges();
+
+
+            return order;
+
+        }
+
+
         //Mehtod to change status to Preparing
         [HttpPut("ChangeStatPreparing")]
         public bool ChangeStatusToPreparing(string sysAccountToken, int orderId)
@@ -231,58 +287,42 @@ namespace CafeEposAPI.Controllers
             }
         }
 
-        //Method to add new items
-        [HttpPost("AddNewItems")]
-        public MakeOrderReturnModel AddMoreItems(string SysAccountToken, int orderId, List<OrderItemsMakeOrderModel> newItems)
+        //Method to update paid ammount
+        [HttpPut("UpdatePaidAmmount")]
+        public bool UpdatePaidAmmount(string sysAccountToken, int orderId, decimal ammount)
         {
-            var foundUser = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == SysAccountToken);
+            var foundUser = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == sysAccountToken);
 
             if (foundUser == null)
             {
-                return new MakeOrderReturnModel();
+                return false;
             }
 
-            //FInd passed in order
             var foundOrderInfo = _eposDbContext.OrderInfo.SingleOrDefault(x => x.Id == orderId);
 
             if (foundOrderInfo == null)
             {
-                return new MakeOrderReturnModel();
+                return false;
             }
 
-            //Chaneg status 
-            foundOrderInfo.status = "Preparing";
-
-            //Add all new items
-            foreach (var item in newItems)
+            if (ammount <= foundOrderInfo.total)
             {
-                var menuItem = _eposDbContext.Menu.Single(x => x.Id == item.ItemId);
-                var orderIt = new OrderItemsEntity
-                {
-                    sysAccountId = foundUser.Id,
-                    Name = menuItem.Name,
-                    price = menuItem.price,
-                    status = "Preparing",
-                    placed = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0),
-                    updated = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0)
-                };
-
-                //Calculate new total 
-                foundOrderInfo.total += menuItem.price;
-                
-                //Add new items to order
-                foundOrderInfo.items.Add(orderIt);
+                foundOrderInfo.ammountPaid = ammount;
+            }
+            else
+            {
+                return false;
             }
 
-            var order = new MakeOrderReturnModel
+            try
             {
-                Id = foundOrderInfo.Id
-            };
-
-            _eposDbContext.SaveChanges();
-
-
-            return order;
+                _eposDbContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
 
         }
     }

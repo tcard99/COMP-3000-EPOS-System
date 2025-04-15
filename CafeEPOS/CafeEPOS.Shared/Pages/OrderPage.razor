@@ -16,7 +16,7 @@
 
 <h1 style="text-align:center; padding-top:50px">EPOS System</h1>
 
-<OrderContainer Categories="@Categories"></OrderContainer>
+<OrderContainer Categories="@Categories" MenuItems="MenuItems"></OrderContainer>
 
 
 @code 
@@ -25,8 +25,13 @@
 
     public CategoryService catServ = new CategoryService();
 
+    public MenuService menServe = new MenuService();
+
     //Store found categorys
     private List<CategoryModel> Categories { get; set; } = new List<CategoryModel>();
+
+    //Store found menu items
+    private List<MenuModel> MenuItems { get; set; } = new List<MenuModel>();
 
     //Get system account token
     public async Task<string> getToken()
@@ -39,6 +44,7 @@
     {
         var token = await getToken();
         Categories = (await catServ.GetAllCategoiesCall(token));
+        MenuItems = (await menServe.GetAllMenuItemsCall(token));
 
     }
 

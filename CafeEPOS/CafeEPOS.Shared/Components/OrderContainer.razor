@@ -5,10 +5,11 @@
 
     <div class="order-container">
 
-       <OrderCategoryContainer Categories="Categories"></OrderCategoryContainer>
+        <OrderCategoryContainer Categories="Categories" OnCategoryChanged="OnSelectedCategoryChanged"></OrderCategoryContainer>
 
         <div class="order-items">
-            wefwef
+            
+            <OrderMenuContainer MenuItems="MenuItems.Where(x => x.categoryId == SelectedCategory?.Id)"></OrderMenuContainer>
 
         </div>
 
@@ -25,6 +26,21 @@
 
 @code
 {
+    //Category Container Component stuff
     [Parameter]
     public IEnumerable<CategoryModel> Categories { get; set; } = [];
+
+    private CategoryModel? SelectedCategory { get; set; }
+
+    private async Task OnSelectedCategoryChanged(CategoryModel category)
+    {
+        SelectedCategory = category;
+        StateHasChanged();
+    }
+
+    //Menu Container Component Stuff
+    [Parameter]
+    public IEnumerable<MenuModel> MenuItems {get; set; } = [];
+
+
 }

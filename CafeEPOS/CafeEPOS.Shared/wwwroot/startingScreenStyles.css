@@ -176,3 +176,21 @@ td {
     padding: 5px;
     vertical-align: middle;
 }
+
+
+.order-menu {
+    margin: 5px;
+    background-color: white;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+.order-menu-items {
+    border: 1px solid gray;
+    border-radius: 5px;
+    text-align: center;
+    margin: 5px;
+    padding: 5px;
+    vertical-align: middle;
+}

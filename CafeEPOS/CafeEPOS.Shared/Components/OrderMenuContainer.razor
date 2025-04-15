@@ -1,0 +1,18 @@
+﻿@using CafeEPOS.Shared.Models
+
+<div class="order-menu">
+
+    @foreach (var item in MenuItems)
+    {
+
+        <div class="order-menu-items">@item.Name</div>
+
+    }
+</div>
+
+
+@code 
+{
+    [Parameter]
+    public IEnumerable<MenuModel> MenuItems { get; set; } = [];
+}

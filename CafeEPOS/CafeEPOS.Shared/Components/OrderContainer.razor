@@ -1,0 +1,30 @@
+﻿@using CafeEPOS.Shared.Models
+
+
+<div class="order-container-wrapper">
+
+    <div class="order-container">
+
+       <OrderCategoryContainer Categories="Categories"></OrderCategoryContainer>
+
+        <div class="order-items">
+            wefwef
+
+        </div>
+
+        <div class="order-items-checkout">
+
+            wefwef
+
+        </div>
+    </div>
+    <div class="order-container-footer">
+        s
+    </div>
+</div>
+
+@code
+{
+    [Parameter]
+    public IEnumerable<CategoryModel> Categories { get; set; } = [];
+}

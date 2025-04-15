@@ -305,9 +305,9 @@ namespace CafeEposAPI.Controllers
                 return false;
             }
 
-            if (ammount <= foundOrderInfo.total)
+            if (ammount < foundOrderInfo.total)
             {
-                foundOrderInfo.ammountPaid = ammount;
+                foundOrderInfo.ammountPaid += ammount;
             }
             else
             {

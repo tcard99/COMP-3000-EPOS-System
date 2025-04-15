@@ -15,7 +15,7 @@
 <div class="table-containter">
     <table>
         <tr>
-            <td><button class="gird-button">Order</button></td>
+            <td><button class="gird-button" @onclick="Order">Order</button></td>
             <td><button class="gird-button" @onclick="Menu">Menu</button></td>
             <td><button class="gird-button" @onclick="Category">Category</button></td>
         </tr>           
@@ -45,7 +45,7 @@
 
     public void Order()
     {
-
+        navigation.NavigateTo("/Order");
     }
 
     public void Menu()

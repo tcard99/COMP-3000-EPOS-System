@@ -1,0 +1,45 @@
+﻿@page "/Order"
+@using CafeEPOS.Shared.Layout
+@layout NoLayout
+@inject NavigationManager navigation
+@using Microsoft.Maui.Controls
+@using CafeEPOS.Shared.Services
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Models
+@using System.Linq
+@using CafeEPOS.Shared.Components
+
+
+<PageTitle>Category</PageTitle>
+
+<link rel="stylesheet" href="_content/CafeEPOS.Shared/startingScreenStyles.css" />
+
+<h1 style="text-align:center; padding-top:50px">EPOS System</h1>
+
+<OrderContainer Categories="@Categories"></OrderContainer>
+
+
+@code 
+{
+    [Inject] LocalStorageService _localStorage { get; set; }
+
+    public CategoryService catServ = new CategoryService();
+
+    //Store found categorys
+    private List<CategoryModel> Categories { get; set; } = new List<CategoryModel>();
+
+    //Get system account token
+    public async Task<string> getToken()
+    {
+        return await _localStorage.GetValue("okten");
+    }
+
+    //On page load retive all menu items from Db
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await getToken();
+        Categories = (await catServ.GetAllCategoiesCall(token));
+
+    }
+
+}

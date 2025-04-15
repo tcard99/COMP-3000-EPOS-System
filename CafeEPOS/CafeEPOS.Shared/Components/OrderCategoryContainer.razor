@@ -1,0 +1,43 @@
+﻿@using CafeEPOS.Shared.Models
+
+<div class="order-categories">
+
+    @foreach (var item in Categories.Where(x => x.parentId == SelectedCategory?.Id || x.Id == SelectedCategory?.Id)
+    .OrderBy(x => x.parentId))
+    {
+
+        <div class="order-categories-items" @onclick="() => OnClick(item)">@item.Name</div>
+
+    }
+    @if (SelectedCategory != null)
+    {
+        <div class="order-categories-items" @onclick="OnBack">Back</div>
+    }
+</div>
+
+@code
+{
+    [Parameter]
+    public IEnumerable<CategoryModel> Categories { get; set; } = [];
+
+    [Parameter]
+    public CategoryModel? SelectedCategory { get; set; }
+
+    private CategoryModel? PrevSelectedCategory { get; set; } = null;
+
+
+    private async Task OnClick(CategoryModel item)
+    {
+        PrevSelectedCategory = SelectedCategory;
+        SelectedCategory = item;
+    }
+
+    private void OnBack()
+    {
+        SelectedCategory = PrevSelectedCategory;
+        PrevSelectedCategory = null;
+    }
+
+
+
+}

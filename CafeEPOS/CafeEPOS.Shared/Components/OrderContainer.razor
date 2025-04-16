@@ -5,18 +5,18 @@
 
     <div class="order-container">
         <div class="order-items">
-        <OrderCategoryContainer Categories="Categories" OnCategoryChanged="OnSelectedCategoryChanged"></OrderCategoryContainer>
+            <OrderCategoryContainer Categories="Categories" OnCategoryChanged="OnSelectedCategoryChanged"></OrderCategoryContainer>
         </div>
 
         <div class="order-items">
-            
-            <OrderMenuContainer MenuItems="MenuItems.Where(x => x.categoryId == SelectedCategory?.Id)"></OrderMenuContainer>
+
+            <OrderMenuContainer MenuItems="MenuItems.Where(x => x.categoryId == SelectedCategory?.Id)" OnChosenItemClicked="OnMenuItemClicked"></OrderMenuContainer>
 
         </div>
 
         <div class="order-items-checkout">
 
-            wefwef
+            <OrderCheckOutComponent OrderModel="Order" OnRemove="OnRemoveOrderItem"></OrderCheckOutComponent>
 
         </div>
     </div>
@@ -38,7 +38,24 @@
 
     //Menu Container Component Stuff
     [Parameter]
-    public IEnumerable<MenuModel> MenuItems {get; set; } = [];
+    public IEnumerable<MenuModel> MenuItems { get; set; } = [];
 
+    public OrderModel Order { get; set; } = new();
 
+    private void OnMenuItemClicked(MenuModel item)
+    {
+        Order.Items.Add(new()
+        {
+            ItemId = item.Id,
+            Name = item.Name,
+            Price = item.price
+        });
+        StateHasChanged();
+    }
+
+    private void OnRemoveOrderItem(OrderItemsModel item)
+    {
+        Order.Items.Remove(item);
+        StateHasChanged();
+    }
 }

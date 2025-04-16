@@ -311,7 +311,7 @@ namespace CafeEposAPI.Controllers
             }
             else
             {
-                return false;
+                ChangeStatusToPreparing(sysAccountToken, orderId);
             }
 
             try

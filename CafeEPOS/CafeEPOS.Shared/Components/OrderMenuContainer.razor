@@ -6,9 +6,10 @@
         @foreach (var item in MenuItems.Skip(PageSize * CurrentPage).Take(PageSize).OrderBy(x => x.Id))
         {
 
-            <div class="order-menu-items">@item.Name</div>
+            <div class="order-menu-items" @onclick="() => OnItemClicked(item)">@item.Name</div>
 
         }
+
     </div>
 
     <div class="order-container-footer">
@@ -27,5 +28,13 @@
     private void OnPageChanged(int page)
     {
         CurrentPage = page;
+    }
+
+    [Parameter]
+    public EventCallback<MenuModel> OnChosenItemClicked { get; set; }
+
+    private async void OnItemClicked(MenuModel item)
+    {
+        await OnChosenItemClicked.InvokeAsync(item);
     }
 }

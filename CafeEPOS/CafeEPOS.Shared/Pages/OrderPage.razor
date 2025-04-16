@@ -19,7 +19,7 @@
 <OrderContainer Categories="@Categories" MenuItems="MenuItems"></OrderContainer>
 
 
-@code 
+@code
 {
     [Inject] LocalStorageService _localStorage { get; set; }
 
@@ -39,13 +39,22 @@
         return await _localStorage.GetValue("okten");
     }
 
+    // protected override async Task OnAfterRenderAsync(bool firstRender)
+    // {
+    //     if (!firstRender && !Categories.Any())
+    //     {
+    //         var token = await getToken();
+    //         Categories = (await catServ.GetAllCategoiesCall(token));
+    //         MenuItems = (await menServe.GetAllMenuItemsCall(token));
+    //     }
+    // }
+
     //On page load retive all menu items from Db
     protected override async Task OnInitializedAsync()
     {
         var token = await getToken();
         Categories = (await catServ.GetAllCategoiesCall(token));
         MenuItems = (await menServe.GetAllMenuItemsCall(token));
-
     }
 
 }

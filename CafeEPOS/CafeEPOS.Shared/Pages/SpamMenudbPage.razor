@@ -1,0 +1,44 @@
+﻿@page "/fillMenu"
+@using CafeEPOS.Shared.Layout
+@layout NoLayout
+@inject NavigationManager navigation
+@using Microsoft.Maui.Controls
+@using CafeEPOS.Shared.Services
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Models
+@using System.Linq
+@using CafeEPOS.Shared.Components
+
+
+<PageTitle>Fill Menu</PageTitle>
+
+<link rel="stylesheet" href="_content/CafeEPOS.Shared/startingScreenStyles.css" />
+
+<h1 style="text-align:center; padding-top:50px">EPOS System</h1>
+
+<button @onclick="Spam">Click me fool!</button>
+
+@code
+{
+    [Inject] LocalStorageService _localStorage { get; set; }
+    public MenuService menServe = new MenuService();
+
+    public async Task<string> getToken()
+    {
+        return await _localStorage.GetValue("okten");
+    }
+
+    public async void Spam()
+    {
+        var token = await getToken();
+
+        for (int i = 21; i<=40; i++)
+        {
+            var name = $" menu item {i}";
+            var catId = 1;
+            var price = 1.50m + 1.00m;
+
+           await menServe.AddNewMenuItem(token, name, catId, price);
+        }
+    }
+}

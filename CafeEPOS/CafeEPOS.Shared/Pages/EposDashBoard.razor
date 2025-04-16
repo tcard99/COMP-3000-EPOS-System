@@ -20,7 +20,7 @@
             <td><button class="gird-button" @onclick="Category">Category</button></td>
         </tr>           
         <tr>            
-            <td><button class="gird-button">Reports</button></td>
+            <td><button class="gird-button" @onclick="Reports">Reports</button></td>
             <td><button class="gird-button">Tables</button></td>
             <td><button class="gird-button">Admin</button></td>
         </tr>
@@ -60,7 +60,7 @@
 
     public void Reports()
     {
-
+        navigation.NavigateTo("/fillMenu");
     }
 
     public void Tables()

@@ -1,20 +1,24 @@
 ﻿@using CafeEPOS.Shared.Models
 
-<div class="order-categories">
+<div class="order-menu-wrappper">
+    <div class="order-categories">
 
-    @foreach (var item in Categories.Where(x => x.parentId == SelectedCategory?.Id || x.Id == SelectedCategory?.Id)
-    .OrderBy(x => x.parentId))
-    {
+        @foreach (var item in Categories.Where(x => x.parentId == SelectedCategory?.Id || x.Id == SelectedCategory?.Id)
+        .OrderBy(x => x.parentId))
+        {
 
-        <div class="order-categories-items" @onclick="() => OnClick(item)">@item.Name</div>
+            <div class="order-categories-items" @onclick="() => OnClick(item)">@item.Name</div>
 
-    }
-    @if (SelectedCategory != null)
-    {
-        <div class="order-categories-items" @onclick="OnBack">Back</div>
-    }
+        }
+        @if (SelectedCategory != null)
+        {
+            <div class="order-categories-items" @onclick="OnBack">Back</div>
+        }
+    </div>
+    <div class="order-container-footer">
+        s
+    </div>
 </div>
-
 @code
 {
     [Parameter]
@@ -39,7 +43,7 @@
         SelectedCategory = item;
         await OnCategoryChanged.InvokeAsync(item);
     }
-   
+
     //Upates selected category
     private async Task OnBack()
     {

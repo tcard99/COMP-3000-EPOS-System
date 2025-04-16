@@ -1,0 +1,44 @@
+﻿<div>
+    @for (int i = 0; i < PageCount; i++)
+    {
+        var page = i;
+        <button @onclick="()=>OnPageClick(page)">@(i + 1)</button>
+    }
+</div>
+
+
+@code {
+    [Parameter]
+    public int PageSize { get; set; }
+
+    [Parameter]
+    public int Count { get; set; }
+
+    [Parameter]
+    public int CurrentPage { get; set; }
+
+    [Parameter]
+    public EventCallback<int> CurrentPageChanged { get; set; }
+
+    private async Task OnPageClick(int page) {
+        CurrentPage = page;
+        await CurrentPageChanged.InvokeAsync(page);
+    }
+
+    private int PageCount = 0;
+
+    protected override void OnParametersSet()
+    {
+        if (Count < PageSize)
+        {
+            PageCount = 1;
+        }
+        else
+        {
+            PageCount = (int)Math.Ceiling(Count * 1m / (PageSize == 0 ? 1 : PageSize));
+        }
+
+        CurrentPage = 0;
+    }
+
+}

@@ -1,18 +1,31 @@
 ﻿@using CafeEPOS.Shared.Models
 
-<div class="order-menu">
+<div class="order-menu-wrappper">
+    <div class="order-menu">
 
-    @foreach (var item in MenuItems)
-    {
+        @foreach (var item in MenuItems.Skip(PageSize * CurrentPage).Take(PageSize).OrderBy(x => x.Id))
+        {
 
-        <div class="order-menu-items">@item.Name</div>
+            <div class="order-menu-items">@item.Name</div>
 
-    }
+        }
+    </div>
+
+    <div class="order-container-footer">
+        <OrderPagination PageSize="@PageSize" CurrentPage="@CurrentPage" Count="@MenuItems.Count()" CurrentPageChanged="OnPageChanged"></OrderPagination>
+    </div>
 </div>
-
-
-@code 
+@code
 {
     [Parameter]
     public IEnumerable<MenuModel> MenuItems { get; set; } = [];
+
+    private int PageSize { get; set; } = 20;
+
+    private int CurrentPage { get; set; } = 0;
+
+    private void OnPageChanged(int page)
+    {
+        CurrentPage = page;
+    }
 }

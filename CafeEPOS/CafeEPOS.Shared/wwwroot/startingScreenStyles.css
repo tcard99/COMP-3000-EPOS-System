@@ -140,7 +140,9 @@ td {
 .order-container-footer {
     height: 50px;
     background-color: white;
-    margin: 5px;
+    margin: 0;
+    margin-top: 12px;
+    /*    border-top: 10px solid #90e0ef;*/
 }
 
 .order-container {
@@ -151,7 +153,7 @@ td {
 }
 
 .order-categories {
-    margin: 5px;
+    height: 98%;
     background-color: white;
     display: grid;
     grid-template-columns: 1fr;
@@ -177,13 +179,19 @@ td {
     vertical-align: middle;
 }
 
+.order-menu-wrappper {
+    height: 100%;
+    background-color: #90e0ef;
+}
 
 .order-menu {
-    margin: 5px;
     background-color: white;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    height: 98%;
+    max-height: 98%;
+    overflow: hidden;
 }
 
 .order-menu-items {

@@ -1,4 +1,6 @@
 ﻿@using CafeEPOS.Shared.Models
+@using CafeEPOS.Shared.Services
+@inject NavigationManager navigation
 
 <div class="order-menu-wrappper">
     <div class="order-categories">
@@ -16,11 +18,13 @@
         }
     </div>
     <div class="order-container-footer">
-        s
+        <button class="order-backButton" @onclick="BackPage">Back</button>
     </div>
 </div>
 @code
 {
+    [Inject] LocalStorageService _localStorage { get; set; }
+
     [Parameter]
     public IEnumerable<CategoryModel> Categories { get; set; } = [];
 
@@ -51,6 +55,19 @@
         await OnCategoryChanged.InvokeAsync(SelectedCategory);
     }
 
+    //Method to go back a page
+    public async void BackPage()
+    {
+        var role = await _localStorage.GetValue("role");
 
+        if (role == "1")
+        {
+            navigation.NavigateTo("/EposDash");
+        }
+        else
+        {
+            navigation.NavigateTo("/StdEposDash");
+        }
+    }
 
 }

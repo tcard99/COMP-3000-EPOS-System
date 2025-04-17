@@ -159,6 +159,18 @@
         else
         {
             PaymentDialog.CloseDialog();
+
+            var role = await _localStorage.GetValue("role");
+
+            if (role == "1")
+            {
+                navigation.NavigateTo("/EposDash");
+            }
+            else
+            {
+                navigation.NavigateTo("/StdEposDash");
+            }
+            
         }
 
     }

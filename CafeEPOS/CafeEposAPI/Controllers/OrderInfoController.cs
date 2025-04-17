@@ -289,39 +289,48 @@ namespace CafeEposAPI.Controllers
 
         //Method to update paid ammount
         [HttpPut("UpdatePaidAmmount")]
-        public bool UpdatePaidAmmount(string sysAccountToken, int orderId, decimal ammount)
+        public UpdatePayAmountReturnModel UpdatePaidAmmount(string sysAccountToken, UpdateAmmountPaidInfoModel model)
         {
             var foundUser = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == sysAccountToken);
 
             if (foundUser == null)
             {
-                return false;
+                return new();
             }
 
-            var foundOrderInfo = _eposDbContext.OrderInfo.SingleOrDefault(x => x.Id == orderId);
+            var foundOrderInfo = _eposDbContext.OrderInfo.SingleOrDefault(x => x.Id == model.OrderId);
 
             if (foundOrderInfo == null)
             {
-                return false;
+                return new();
             }
 
-            if (ammount < foundOrderInfo.total)
+            //Update the ammount paid if less than total
+            foundOrderInfo.ammountPaid += model.AmmountPaid;
+
+            if (foundOrderInfo.ammountPaid >= foundOrderInfo.total)
             {
-                foundOrderInfo.ammountPaid += ammount;
-            }
-            else
-            {
-                ChangeStatusToPreparing(sysAccountToken, orderId);
+                //If ammount is paid change the state of the order
+                ChangeStatusToPreparing(sysAccountToken, model.OrderId);
             }
 
             try
             {
                 _eposDbContext.SaveChanges();
-                return true;
+
+                //Return ammount due and total
+                var data = new UpdatePayAmountReturnModel
+                {
+                    Id = foundOrderInfo.Id,
+                    AmountDue = foundOrderInfo.total - foundOrderInfo.ammountPaid,
+                    Total = foundOrderInfo.total
+                };
+
+                return data;
             }
             catch (Exception ex)
             {
-                return false;
+                return new();
             }
 
         }

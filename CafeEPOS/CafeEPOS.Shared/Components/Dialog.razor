@@ -1,0 +1,81 @@
+﻿@if (Open)
+{
+    <div class="modal-container">
+        <div class="modal-dialog-wrapper">
+            <div class="modal-dialog-header">
+                @Header
+            </div>
+            <div class="modal-dialog-body">
+                @Body
+            </div>
+            <div class="modal-dialog-footer">
+                @if (OkEnabled == true)
+                {
+                    <button @onclick="OnOkClicked">@OkText</button>
+                }
+                else
+                {
+                    <button disabled>@OkText</button>
+                }
+                @if (!string.IsNullOrWhiteSpace(CancelText))
+                {
+                    <button @onclick="OnCancelClicked">@CancelText</button>
+                }
+            </div>
+
+        </div>
+    </div>
+}
+@code {
+    [Parameter]
+    public RenderFragment? Header { get; set; }
+
+    [Parameter]
+    public RenderFragment? Body { get; set; }
+
+    [Parameter]
+    public string OkText { get; set; } = "OK";
+
+    [Parameter]
+    public string CancelText { get; set; } = "Cancel";
+
+    [Parameter]
+    public bool Open { get; set; } = false;
+
+    [Parameter]
+    public bool OkEnabled { get; set; } = true;
+
+    [Parameter]
+    public bool AutoClose { get; set; } = false;
+
+    [Parameter]
+    public EventCallback<bool> OnResult { get; set; }
+
+    public void OpenDialog()
+    {
+        Open = true;
+    }
+
+    public void CloseDialog()
+    {
+        Open = false;
+    }
+
+    private async Task OnOkClicked()
+    {
+        if (AutoClose)
+        {
+            Open = false;
+        }
+        await OnResult.InvokeAsync(true);
+    }
+
+    private async Task OnCancelClicked()
+    {
+        if (AutoClose)
+        {
+            Open = false;
+        }
+        await OnResult.InvokeAsync(false);
+    }
+}

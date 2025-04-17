@@ -42,14 +42,25 @@ namespace CafeEposAPI.Controllers
                 Name = newUser.Name,
                 Email = newUser.Email,
                 Password = newUser.Password,
-                Token = Guid.NewGuid().ToString(),
+                Token = Guid.NewGuid().ToString()
             };
+
+            //Create admin account
+            newSystemAccount.Staff.Add(new staffLoginEntity
+            {
+                Name = "Admin",
+                staffId = "0001",
+                passcode = "1234",
+                role = 1,
+                archived = 0
+            });
 
             _eposDbContext.Add(newSystemAccount);
 
             try
             {
                 _eposDbContext.SaveChanges();
+
                 return newSystemAccount.Token;
             }
             catch (Exception ex)

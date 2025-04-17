@@ -14,7 +14,7 @@
     </div>
     <div class="order-checkout-footer">
         <p>£ @OrderModel.Total</p>
-        <button>Pay</button>
+        <button @onclick="Pay">Pay</button>
     </div>
 </div>
 
@@ -30,6 +30,14 @@
 
     public async void Remove(OrderItemsModel item)
     {
-       await OnRemove.InvokeAsync(item);
+        await OnRemove.InvokeAsync(item);
+    }
+
+    [Parameter]
+    public EventCallback<OrderModel> OnPay { get; set; } 
+
+    public async void Pay()
+    {
+        await OnPay.InvokeAsync();
     }
 }

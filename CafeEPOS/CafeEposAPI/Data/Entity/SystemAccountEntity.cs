@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
@@ -16,6 +17,7 @@ namespace CafeEposAPI.Data.Entity
         public string Password { get; set; }
         [JsonIgnore]
         public string Token { get; set; }
+        public Collection<staffLoginEntity> Staff { get; set; } = [];
 
     }
 }

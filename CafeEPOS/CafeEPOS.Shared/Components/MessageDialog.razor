@@ -1,0 +1,24 @@
+﻿<Dialog @ref="MsgDialog" CancelText="" AutoClose="true">
+    <Header>@Title</Header>
+    <Body>
+        <p>@MessageText</p>
+    </Body>
+</Dialog>
+
+@code {
+    private Dialog MsgDialog;
+
+    private string Title { get; set; } = "Title";
+
+    private string MessageText { get; set; } = "";
+
+    public void ShowMessage(string title, string messageText)
+    {
+        Title = title;
+        MessageText = messageText;
+
+        MsgDialog.OpenDialog();
+
+        StateHasChanged();
+    }
+}

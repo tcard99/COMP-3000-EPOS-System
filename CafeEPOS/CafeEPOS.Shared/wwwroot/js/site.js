@@ -14,3 +14,7 @@ function getValue(key) {
 function removeValue(key) {
     localStorage.removeItem(key);
 }
+
+function userInput(message) {
+    return prompt(message);
+}

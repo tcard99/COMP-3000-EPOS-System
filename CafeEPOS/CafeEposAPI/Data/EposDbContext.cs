@@ -33,6 +33,11 @@ namespace CafeEposAPI.Data
                 .HasOne(e => e.OrderInfo)
                 .WithMany(e => e.items)
                 .HasForeignKey(e => e.OrderId);
+
+            modelBuilder.Entity<staffLoginEntity>()
+                .HasOne(e => e.systemAccount)
+                .WithMany(e => e.Staff)
+                .HasForeignKey(e => e.sysAccountId);
         }
     }
 }

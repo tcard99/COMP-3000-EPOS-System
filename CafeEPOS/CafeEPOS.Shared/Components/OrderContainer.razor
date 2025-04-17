@@ -16,7 +16,7 @@
 
         <div class="order-items-checkout">
 
-            <OrderCheckOutComponent OrderModel="Order" OnRemove="OnRemoveOrderItem"></OrderCheckOutComponent>
+            <OrderCheckOutComponent OrderModel="Order" OnRemove="OnRemoveOrderItem" OnPay="Pay"></OrderCheckOutComponent>
 
         </div>
     </div>
@@ -40,22 +40,33 @@
     [Parameter]
     public IEnumerable<MenuModel> MenuItems { get; set; } = [];
 
-    public OrderModel Order { get; set; } = new();
+    [Parameter]
+    public OrderModel Order { get; set; }
 
+    //Method to store selcted meny items
     private void OnMenuItemClicked(MenuModel item)
     {
         Order.Items.Add(new()
-        {
-            ItemId = item.Id,
-            Name = item.Name,
-            Price = item.price
-        });
+            {
+                ItemId = item.Id,
+                Name = item.Name,
+                Price = item.price
+            });
         StateHasChanged();
     }
 
+    //MEthod to remove a selected menu item
     private void OnRemoveOrderItem(OrderItemsModel item)
     {
         Order.Items.Remove(item);
         StateHasChanged();
+    }
+
+    [Parameter]
+    public EventCallback OnPay { get; set; }
+
+    private async void Pay()
+    {
+        await OnPay.InvokeAsync();
     }
 }

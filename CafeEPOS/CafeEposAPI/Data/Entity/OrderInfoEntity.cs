@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace CafeEposAPI.Data.Entity
 {
@@ -10,6 +11,7 @@ namespace CafeEposAPI.Data.Entity
     {
         [Key]
         public int Id { get; set; }
+        [JsonIgnore]
         public int sysAccountId { get; set; }
         public required string waiterName { get; set; }
         public string? table {  get; set; }

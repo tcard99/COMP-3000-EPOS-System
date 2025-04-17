@@ -76,6 +76,7 @@
             else
             {
                 await _localStorage.StoreValue("role", login.FirstOrDefault().role.ToString());
+                await _localStorage.StoreValue("name", login.FirstOrDefault().Name.ToString());
 
                 if (login.FirstOrDefault().role == 0)
                 {

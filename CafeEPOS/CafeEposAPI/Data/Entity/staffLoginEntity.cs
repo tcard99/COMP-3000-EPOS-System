@@ -12,5 +12,6 @@ namespace CafeEposAPI.Data.Entity
         public int sysAccountId { get; set; }
         public int role { get; set; }
         public int archived { get; set; }
+        public SystemAccountEntity systemAccount { get; set; }
     }
 }

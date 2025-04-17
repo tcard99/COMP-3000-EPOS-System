@@ -16,16 +16,46 @@
 
 <h1 style="text-align:center; padding-top:50px">EPOS System</h1>
 
-<OrderContainer Categories="@Categories" MenuItems="MenuItems"></OrderContainer>
+<!--Component for the orderpage layout area-->
+<OrderContainer Categories="@Categories" MenuItems="MenuItems" Order="Order" OnPay="SelectTable"></OrderContainer>
 
+
+<!--Dialog pop up to get user to enter table number-->
+<Dialog Open="TableSelectDialogOpen" OkText="Place Order" OnResult="OnTableSelectResult" OkEnabled="!string.IsNullOrWhiteSpace(Table)">
+    <Header>Select Table</Header>
+    <Body>
+        <p>Please enter a table</p>
+        <InputText @bind-Value="Table" AdditionalAttributes="@(new Dictionary<string,object> {{"placeholder", "Table number"}})"></InputText>
+    </Body>
+</Dialog>
+
+<!--Dialog pop up to show payment info and enter ammont being paid-->
+<Dialog @ref="PaymentDialog" OkText="Place Order" AutoClose="true" OkEnabled="false" CancelText="Close">
+    <Header>Payment</Header>
+    <Body>
+        <p>Please enter amount to pay</p>
+        <p>Outstanding amount = £ @Order.AmountDue</p>
+        <InputNumber @bind-Value="PaymentAmount" AdditionalAttributes="@(new Dictionary<string,object> {{"placeholder", "Amount"}})"></InputNumber>
+        <button @onclick="Pay">Card</button>
+        <button @onclick="Pay">Cash</button>
+    </Body>
+</Dialog>
+
+<!--Dialog pop up to say order has been placed-->
+<MessageDialog @ref="MsgDialog"></MessageDialog>
 
 @code
 {
+    //Import services
     [Inject] LocalStorageService _localStorage { get; set; }
+    [Inject] IFormFactor FF { get; set; }
+    [Inject] IJSRuntime JS { get; set; }
 
     public CategoryService catServ = new CategoryService();
 
     public MenuService menServe = new MenuService();
+
+    public OrderService ordServ = new OrderService();
 
     //Store found categorys
     private List<CategoryModel> Categories { get; set; } = new List<CategoryModel>();
@@ -33,21 +63,105 @@
     //Store found menu items
     private List<MenuModel> MenuItems { get; set; } = new List<MenuModel>();
 
+    //Hold current order being made
+    private OrderModel Order { get; set; } = new();
+
+    //Current Id of the order
+    public int OrderId { get; set; }
+
+    public bool TableSelectDialogOpen { get; set; }
+
+    private MessageDialog MsgDialog;
+    private Dialog PaymentDialog;
+
+    private string? Table { get; set; }
+    private decimal PaymentAmount { get; set; }
+
+    //Method to get table dialog to open
+    private void SelectTable()
+    {
+        TableSelectDialogOpen = true;
+        StateHasChanged();
+    }
+
+    //Method to close tbale digalog and run the pay method
+    private async Task OnTableSelectResult(bool result)
+    {
+        if (result == true)
+        {
+            await OnPay(Table);
+        }
+        TableSelectDialogOpen = false;
+    }
+
     //Get system account token
     public async Task<string> getToken()
     {
         return await _localStorage.GetValue("okten");
     }
 
-    // protected override async Task OnAfterRenderAsync(bool firstRender)
-    // {
-    //     if (!firstRender && !Categories.Any())
-    //     {
-    //         var token = await getToken();
-    //         Categories = (await catServ.GetAllCategoiesCall(token));
-    //         MenuItems = (await menServe.GetAllMenuItemsCall(token));
-    //     }
-    // }
+    //Send new order to db
+    private async Task OnPay(string? tableName)
+    {
+        var token = await getToken();
+
+        //Make objecct to hold the order info
+        var data = new MakeOrderModel
+            {
+                WaiterName = await _localStorage.GetValue("name"),
+                Table = tableName,
+                Items = Order.Items.Select(x => new MakeOrderItemModel
+                {
+                    ItemId = x.ItemId
+                }).ToList()
+            };
+
+        //Make call to API to make new order
+        var newOrder = await ordServ.MakeNewOrder(token, data);
+
+        //Hodl the new order id
+        OrderId = newOrder.Id;
+
+        //If order fails show message 
+        if (newOrder.Id == 0)
+        {
+            MsgDialog.ShowMessage("Error", "Order not placed!");
+        }
+        else
+        {
+            //If successful show passed message and start pay dialog
+            MsgDialog.ShowMessage("Order Placed Confirmation", "Order placed");
+
+            //Get Order info
+            var orderInfo = await ordServ.GetSpecificOrderInfo(token, OrderId);
+
+            Order.AmountDue = orderInfo.total - orderInfo.ammountPaid;
+
+            PaymentDialog.OpenDialog();
+        }
+    }
+
+
+    private async Task Pay()
+    {
+        //Get token
+        var token = await getToken();
+
+        // update order with amount paid
+        var makePay = await ordServ.UpdateAmmountPaid(token, OrderId, PaymentAmount);
+
+        if (makePay.AmountDue > 0)
+        {
+            Order.AmountDue = makePay.AmountDue;
+            StateHasChanged();
+            PaymentAmount = 0;
+        }
+        else
+        {
+            PaymentDialog.CloseDialog();
+        }
+
+    }
 
     //On page load retive all menu items from Db
     protected override async Task OnInitializedAsync()
@@ -56,5 +170,4 @@
         Categories = (await catServ.GetAllCategoiesCall(token));
         MenuItems = (await menServe.GetAllMenuItemsCall(token));
     }
-
 }

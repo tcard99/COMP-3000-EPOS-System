@@ -11,6 +11,7 @@ namespace CafeEPOS.Shared.Models
         public string? WaiterName { get; set; }
         public string? Table { get; set; }
         public List<OrderItemsModel> Items { get; set; } = [];
+        public decimal AmountDue { get; set; }
         public decimal Total
         {
             get

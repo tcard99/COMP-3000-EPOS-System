@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CafeEPOS.Shared.Services
 {
@@ -55,16 +56,46 @@ namespace CafeEPOS.Shared.Services
             if (response.IsSuccessStatusCode)
             {
 
-                    var a = await response.Content.ReadAsStringAsync();
-                    var data = await response.Content.ReadFromJsonAsync<StaffAccountReturnModel>();
-                    return data;
-               
+                var a = await response.Content.ReadAsStringAsync();
+                var data = await response.Content.ReadFromJsonAsync<StaffAccountReturnModel>();
+                return data;
+
 
             }
             else
             {
                 return new StaffAccountReturnModel();
             }
+        }
+
+        //Method to add new staff member
+        public async Task<bool> AddNewStaffAccount(string sysAccountToken, string Name, string staffId, string passCode, int Role)
+        {
+            //Set up paramater
+            var param = $"sysAccountToken={sysAccountToken}";
+
+            //Set up request url
+            var url = $"{baseApiUrl}StaffManagment/MakeNewStaff?{param}";
+
+            var data = new MakeNewStaffAccountModel
+            {
+                Name = Name,
+                StaffId = staffId,
+                Passcode = passCode,
+                Role = Role
+            };
+
+            var response = await _httpClient.PostAsJsonAsync(url, data);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<bool>();
+            }
+            else
+            {
+                return false;
+            }
+
         }
 
         //Method to update staff account info
@@ -85,7 +116,7 @@ namespace CafeEPOS.Shared.Services
                 Passcode = passCode,
                 Role = Role
             };
-            
+
             //Send request to API
             var response = await _httpClient.PutAsJsonAsync(url, data);
 
@@ -99,5 +130,25 @@ namespace CafeEPOS.Shared.Services
             }
         }
 
+        //Method to remove user#
+        public async Task<bool> RemoveStaffAccount(string sysAccountToken, int Id)
+        {
+            //Set up paramater
+            var param = $"sysAccountToken={sysAccountToken}";
+
+            //Set up request url
+            var url = $"{baseApiUrl}StaffManagment/DelStaffAccount?{param}&id={Id}";
+            var response = await _httpClient.DeleteAsync(url);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<bool>();
+            }
+            else
+            {
+                return false;
+            }
+
+        }
     }
 }

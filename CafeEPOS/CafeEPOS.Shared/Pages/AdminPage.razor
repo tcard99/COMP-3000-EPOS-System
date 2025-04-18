@@ -28,7 +28,7 @@
         <QuickGrid Items="Staff.AsQueryable()" Pagination="state">
             <PropertyColumn Property="@(x => x.Name)" Title="Staff Name" />
             <PropertyColumn Property="@(x => x.staffId)" />
-            <PropertyColumn Property="@(x => x.role == 1 ? "Admin" : "Waiter")" Title="Role" Sortable="true"/>
+            <PropertyColumn Property="@(x => x.role == 1 ? "Admin" : "Waiter")" Title="Role" Sortable="true" />
 
 
             <TemplateColumn Context="items">
@@ -57,6 +57,7 @@
 @code
 {
     [Inject] IJSRuntime JS { get; set; }
+    [Inject] IFormFactor FF { get; set; }
     [Inject] LocalStorageService _localStorage { get; set; }
 
     AdminService adminServ = new AdminService();
@@ -65,6 +66,8 @@
 
     private IEnumerable<StaffAccountReturnModel> Staff = [];
 
+    public string token { get; set; }
+
     public async Task<string> getToken()
     {
         return await _localStorage.GetValue("okten");
@@ -72,7 +75,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var token = await getToken();
+        token = await getToken();
         Staff = (await adminServ.GetAllStaff(token)).AsQueryable();
 
     }
@@ -82,14 +85,30 @@
         navigation.NavigateTo($"/editStaff/{id}");
     }
 
-    public void remove(int id)
+    public async void remove(int id)
     {
+        var removeStaff = await adminServ.RemoveStaffAccount(token, id);
 
+        if (removeStaff == true)
+        {
+            navigation.NavigateTo("/EposDash");
+        }
+        else
+        {
+            if (FF.GetFormFactor().StartsWith("Web"))
+            {
+                await JS.InvokeVoidAsync("showAlert", "User deletion failed");
+            }
+            else
+            {
+                await Application.Current.MainPage.DisplayAlert("Alert", "User deletion failed", "OK");
+            }
+        }
     }
 
     public void add()
     {
-
+        navigation.NavigateTo("/addStaff");
     }
 
     public void back()

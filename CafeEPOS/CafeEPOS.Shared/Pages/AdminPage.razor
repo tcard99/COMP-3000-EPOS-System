@@ -16,10 +16,53 @@
 <h1 style="text-align:center; padding-top:50px">EPOS System</h1>
 <h2 style="text-align:center;">Admin</h2>
 
+<div class="container-fluid1">
+    <!--Check to see if there are any items-->
+    @if (Staff == null)
+    {
+        <p>No Staff Found</p>
+    }
+    else
+    {
+        <!--If there are items display all items-->
+        <QuickGrid Items="Staff" Pagination="state">
+            <PropertyColumn Property="@(x => x.Name)" Title="Parent Category" Sortable="true" />
+            <PropertyColumn Property="@(x => x.staffId)" />
+
+
+            <TemplateColumn Context="items">
+                <button @onclick="() => edit(items.Id)">Edit</button>
+                <button @onclick="() => remove(items.Id)">Remove</button>
+            </TemplateColumn>
+        </QuickGrid>
+
+        <Paginator State="state" />
+    }
+
+    <div class="container-fluid1">
+        <div class="LoginBackContainer">
+            <button class="backButton" @onclick="back">Back</button>
+            <button class="loginButton" @onclick="add">Add</button>
+        </div>
+    </div>
+
+</div>
+
+<script src="_content/CafeEPOS.Shared/js/site.js"></script>
+
+
+
+
 @code
 {
     [Inject] IJSRuntime JS { get; set; }
     [Inject] LocalStorageService _localStorage { get; set; }
+
+    AdminService adminServ = new AdminService();
+
+    PaginationState state = new PaginationState() { ItemsPerPage = 10 };
+
+    private IQueryable<StaffAccountReturnModel> Staff = null;
 
     public async Task<string> getToken()
     {
@@ -29,6 +72,27 @@
     protected override async Task OnInitializedAsync()
     {
         var token = await getToken();
+        Staff = (await adminServ.GetAllStaff(token)).AsQueryable();
 
+    }
+
+    public void edit(int id)
+    {
+
+    }
+
+    public void remove(int id)
+    {
+
+    }
+
+    public void add()
+    {
+
+    }
+
+    public void back()
+    {
+        navigation.NavigateTo("/EposDash");
     }
 }

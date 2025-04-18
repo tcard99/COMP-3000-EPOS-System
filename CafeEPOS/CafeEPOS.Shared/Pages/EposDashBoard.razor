@@ -22,7 +22,7 @@
         <tr>            
             <td><button class="gird-button" @onclick="Reports">Reports</button></td>
             <td><button class="gird-button">Tables</button></td>
-            <td><button class="gird-button">Admin</button></td>
+            <td><button class="gird-button" @onclick="Admin">Admin</button></td>
         </tr>
     </table>
 </div>
@@ -70,7 +70,7 @@
 
     public void Admin()
     {
-
+        navigation.NavigateTo("/Admin");
     }
 
 

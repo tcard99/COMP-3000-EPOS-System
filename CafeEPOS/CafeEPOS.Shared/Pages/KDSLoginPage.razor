@@ -1,0 +1,96 @@
+﻿@page "/KDSStaffLogin"
+@using CafeEPOS.Shared.Layout
+@layout NoLayout
+@inject NavigationManager navigation
+@using Microsoft.Maui.Controls
+@using CafeEPOS.Shared.Services
+
+<PageTitle>KDS Staff Login</PageTitle>
+
+<link rel="stylesheet" href="_content/CafeEPOS.Shared/startingScreenStyles.css" />
+
+
+<img src="_content/CafeEPOS.Shared/images/ImagePlaceholder.png" width="100" height="100" class="logo" alt="Logo" />
+<h1 style="text-align:center; padding-top:50px">KDS Staff Login</h1>
+
+<div class="container-fluid1">
+    <h2 style="text-align:center">Staff Login</h2>
+
+    <input type="number" placeholder="Enter User Id" @bind="usernameVal" style="text-align:center; width:50%; border-radius:50px" />
+
+    <br />
+
+    <input type="password" placeholder="Enter Password" @bind="passwordVal" style="text-align:center; width:50%; border-radius:50px" @onkeypress="@Enter" />
+
+    <div class="LoginBackContainer">
+
+        <button class="backButton" @onclick="Back">Back</button>
+
+        <button class="loginButton" @onclick="login">Login</button>
+    </div>
+</div>
+
+<script src="_content/CafeEPOS.Shared/js/site.js"></script>
+
+@code
+{
+    [Inject] IJSRuntime JS { get; set; }
+    [Inject] IFormFactor FF { get; set; }
+    [Inject] LocalStorageService _localStorage { get; set; }
+
+    public string usernameVal { get; set; }
+    public string passwordVal { get; set; }
+
+    public async void login()
+    {
+        var token = await _localStorage.GetValue("okten");
+
+        if (usernameVal == null || passwordVal == null)
+        {
+            if (FF.GetFormFactor().StartsWith("Web"))
+            {
+                await JS.InvokeVoidAsync("showAlert", "Please enter all feilds");
+            }
+            else
+            {
+                await Application.Current.MainPage.DisplayAlert("Alert", "Please enter all feilds", "OK");
+            }
+        }
+        else
+        {
+            var authService = new AuthenticationService();
+
+            var login = await authService.StaffLogin(token, usernameVal, passwordVal);
+
+            if (login.Count() == 0)
+            {
+                if (FF.GetFormFactor().StartsWith("Web"))
+                {
+                    await JS.InvokeVoidAsync("showAlert", $"Incorrect username or password");
+                }
+                else
+                {
+                    await Application.Current.MainPage.DisplayAlert("Alert", "Incorrect username or password", "OK");
+                }
+            }
+            else
+            {
+                navigation.NavigateTo("/KDSPage");
+            }
+        }
+    }
+
+    //Allow user to activate login method when enter key is pressed
+    public void Enter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter")
+        {
+            login();
+        }
+    }
+
+    public void Back()
+    {
+        navigation.NavigateTo("/SystemChoosePage");
+    }
+}

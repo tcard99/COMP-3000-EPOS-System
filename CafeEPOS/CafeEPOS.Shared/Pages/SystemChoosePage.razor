@@ -22,7 +22,7 @@
             <button class="EposButton" style="margin-right:10px" @onclick="EposPage">
                 EPOS
             </button>
-            <button class="KDSButton">
+            <button class="KDSButton" @onclick="KDSPage">
                 KDS
             </button>
         </div>
@@ -49,6 +49,11 @@
     public void EposPage()
     {
         navigation.NavigateTo("/EposStaffLogin");
+    }
+
+    public void KDSPage()
+    {
+        navigation.NavigateTo("/KDSStaffLogin");
     }
 
 }

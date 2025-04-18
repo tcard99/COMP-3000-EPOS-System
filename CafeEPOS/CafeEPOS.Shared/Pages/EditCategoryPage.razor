@@ -20,7 +20,7 @@
     <h2 style="text-align:center;">Edit Category</h2>
 
     <select class="CatDropDown" @bind="parentCatId">
-        <option value="">Choose if not parent</option>
+        <option value="">Choose if parent</option>
         @foreach (var cat in parentCategorys)
         {
             <option value="@cat.Id">@cat.Name</option>

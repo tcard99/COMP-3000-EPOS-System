@@ -39,5 +39,65 @@ namespace CafeEPOS.Shared.Services
             }
         }
 
+        //Method to get single staff info
+        public async Task<StaffAccountReturnModel> GetSingleStaffInfo(string sysAccountToken, int Id)
+        {
+            //Set up paramater
+            var param = $"sysAccountToken={sysAccountToken}&staffId={Id}";
+
+            //Set up request url
+            var url = $"{baseApiUrl}StaffManagment/GetSpecificUser?{param}";
+
+            //Send request to API
+            var response = await _httpClient.GetAsync(url);
+
+            //Chcek to see if successful
+            if (response.IsSuccessStatusCode)
+            {
+
+                    var a = await response.Content.ReadAsStringAsync();
+                    var data = await response.Content.ReadFromJsonAsync<StaffAccountReturnModel>();
+                    return data;
+               
+
+            }
+            else
+            {
+                return new StaffAccountReturnModel();
+            }
+        }
+
+        //Method to update staff account info
+        public async Task<int> UpdateStaffAccountInfo(string sysAccountToken, int Id, string Name, string staffId, string passCode, int Role)
+        {
+            //Set up paramater
+            var param = $"sysAccountToken={sysAccountToken}";
+
+            //Set up request url
+            var url = $"{baseApiUrl}StaffManagment/UpdateStaffInfo?{param}";
+
+            //set up data to give to api
+            var data = new UpdateStaffAccountModel
+            {
+                Id = Id,
+                Name = Name,
+                StaffId = staffId,
+                Passcode = passCode,
+                Role = Role
+            };
+            
+            //Send request to API
+            var response = await _httpClient.PutAsJsonAsync(url, data);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<int>();
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
     }
 }

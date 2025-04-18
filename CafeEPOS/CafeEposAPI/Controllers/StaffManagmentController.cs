@@ -53,7 +53,7 @@ namespace CafeEposAPI.Controllers
                 return new StaffAccountReturnModel();
             }
 
-            var foundStaff = _eposDbContext.StaffAccounts.SingleOrDefault(x => x.Id == staffId);
+            var foundStaff = _eposDbContext.StaffAccounts.SingleOrDefault(x => x.Id == staffId && x.sysAccountId == foundUser.Id);
 
             if (foundStaff == null)
             {
@@ -108,27 +108,40 @@ namespace CafeEposAPI.Controllers
 
         //Method to update staff account info
         [HttpPut("UpdateStaffInfo")]
-        public bool UpdateStaffInfo(string sysAccounToken, UpdateStaffInfoModel staffInfo)
+        public int UpdateStaffInfo(string sysAccountToken, UpdateStaffInfoModel staffInfo)
         {
-            var foundUser = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == sysAccounToken);
+            //0 = Only password can be changed
+            //1 = success
+            //2 = user cant be found/saved
+
+            var foundUser = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == sysAccountToken);
 
             if (foundUser == null)
             {
-                return false;
+                return 2;
             }
 
             var foundStaff = _eposDbContext.StaffAccounts.SingleOrDefault(x => x.Id == staffInfo.Id);
 
             if (foundStaff == null)
             {
-                return false;
+                return 2;
             }
 
             //Dont allow default created account to be changed
             if (foundStaff.staffId == "0001")
             {
-                Response.StatusCode = 304;
-                return false;
+                foundStaff.passcode = staffInfo.Passcode;
+
+                try
+                {
+                    _eposDbContext.SaveChanges();
+                    return 0;
+                }
+                catch (Exception ex)
+                {
+                    return 2;
+                }
             }
             else
             {
@@ -140,11 +153,11 @@ namespace CafeEposAPI.Controllers
                 try
                 {
                     _eposDbContext.SaveChanges();
-                    return true;
+                    return 1;
                 }
                 catch (Exception ex)
                 {
-                    return false;
+                    return 2;
                 }
             }
         }

@@ -1,0 +1,178 @@
+﻿@page "/editStaff/{passedId}"
+@using CafeEPOS.Shared.Layout
+@layout NoLayout
+@inject NavigationManager navigation
+@using Microsoft.Maui.Controls
+@using CafeEPOS.Shared.Services
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Models
+@using System.Linq
+
+<PageTitle> Edit Staff</PageTitle>
+
+<link rel="stylesheet" href="_content/CafeEPOS.Shared/startingScreenStyles.css" />
+
+<img src="_content/CafeEPOS.Shared/images/ImagePlaceholder.png" width="100" height="100" class="logo" alt="Logo" />
+<h1 style="text-align:center; padding-top:50px; margin-bottom:175px;">EPOS System</h1>
+
+
+<div class="container-fluid1" style="height:50px;">
+    <h2 style="text-salign:center;">Edit Staff</h2>
+
+    @if (foundStaff == null)
+    {
+        <p>No Staff Found</p>
+    }
+    else if (foundStaff.staffId != "0001")
+    {
+        <input type="text" placeholder="Enter name" style="text-align:center; width:50%; border-radius:50px;" @bind="newName" />
+        <br />
+        <input type="text" placeholder="Enter staff Id" style="text-align:center; width:50%; border-radius:50px;" @bind="newStaffId" />
+        <br />
+        <input type="password" placeholder="Enter staff Id" style="text-align:center; width:50%; border-radius:50px;" @bind="newStaffPasscode" />
+        <br />
+        <select class="CatDropDown" @bind="optionSelectRole">
+            <option value="1">Admin</option>
+            <option value="2">Waiter</option>
+        </select>
+
+    }
+    else
+    {
+        <input type="text" placeholder="Enter name" style="text-align:center; width:50%; border-radius:50px;" @bind="newName" disabled/>
+        <br />
+        <input type="text" placeholder="Enter staff Id" style="text-align:center; width:50%; border-radius:50px;" @bind="newStaffId" disabled />
+        <br />
+        <input type="password" placeholder="Enter staff Id" style="text-align:center; width:50%; border-radius:50px;" @bind="newStaffPasscode" />
+        <br />
+        <select class="CatDropDown" @bind="optionSelectRole" disabled>
+            <option value="1">Admin</option>
+            <option value="2">Waiter</option>
+        </select>
+    }
+
+    <div class="container-fluid1">
+        <div class="LoginBackContainer">
+            <button class="backButton" @onclick="back">Back</button>
+            <button class="loginButton" @onclick="update">Update</button>
+        </div>
+    </div>
+
+</div>
+
+<script src="_content/CafeEPOS.Shared/js/site.js"></script>
+
+
+@code
+{
+    [Inject] IJSRuntime JS { get; set; }
+
+    [Inject] IFormFactor FF { get; set; }
+
+    [Inject] LocalStorageService _localStorage { get; set; }
+
+    [Parameter] public string passedId { get; set; }
+
+    AdminService adminServ = new AdminService();
+
+    public StaffAccountReturnModel foundStaff { get; set; }
+
+    public string token { get; set; }
+
+    //values for updating staff info
+    public string newName { get; set; }
+    public string newStaffId { get; set; }
+    public string newStaffPasscode { get; set; }
+    public int role { get; set; }
+
+    public int optionSelectRole { get; set; }
+
+
+    //Get system account token
+    public async Task<string> getToken()
+    {
+        return await _localStorage.GetValue("okten");
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        //Get Token
+        token = await getToken();
+
+        //Find passed staff]
+        foundStaff = (await adminServ.GetSingleStaffInfo(token, int.Parse(passedId)));
+
+        newName = foundStaff.Name;
+        newStaffId = foundStaff.staffId;
+        newStaffPasscode = foundStaff.passcode;
+        optionSelectRole = foundStaff.role;
+    }
+
+
+    public void back()
+    {
+        navigation.NavigateTo("/Admin");
+    }
+
+    public async void update()
+    {
+        if (newName == null || newName == "" || newStaffId == null || newStaffId == "" || newStaffPasscode == null || newStaffPasscode == "")
+        {
+            if (FF.GetFormFactor().StartsWith("Web"))
+            {
+                await JS.InvokeVoidAsync("showAlert", "Please make sure all feilds are filled");
+            }
+            else
+            {
+                await Application.Current.MainPage.DisplayAlert("Alert", "Please make sure all feilds are filled", "OK");
+            }
+        }
+        else
+        {
+            var updateStaff = await adminServ.UpdateStaffAccountInfo(token, int.Parse(passedId), newName, newStaffId, newStaffPasscode, optionSelectRole);
+
+            if (updateStaff == 2)
+            {
+                if (FF.GetFormFactor().StartsWith("Web"))
+                {
+                    await JS.InvokeVoidAsync("showAlert", "User not found/Failed to save");
+                    navigation.NavigateTo("/Admin");
+                }
+                else
+                {
+                    await Application.Current.MainPage.DisplayAlert("Alert", "User not found/Failed to save", "OK");
+                    navigation.NavigateTo("/Admin");
+                }
+            }
+            if (updateStaff == 1)
+            {
+                if (FF.GetFormFactor().StartsWith("Web"))
+                {
+                    await JS.InvokeVoidAsync("showAlert", "User Updated");
+                    navigation.NavigateTo("/Admin");
+                }
+                else
+                {
+                    await Application.Current.MainPage.DisplayAlert("Alert", "User Updated", "OK");
+                    navigation.NavigateTo("/Admin");
+                }
+
+                navigation.NavigateTo("/Admin");
+            }
+            if (updateStaff == 0)
+            {
+                if (FF.GetFormFactor().StartsWith("Web"))
+                {
+                    await JS.InvokeVoidAsync("showAlert", "Password Changed");
+                    navigation.NavigateTo("/Admin");
+                }
+                else
+                {
+                    await Application.Current.MainPage.DisplayAlert("Alert", "Password Changed", "OK");
+                    navigation.NavigateTo("/Admin");
+                }
+            }
+        }
+    }
+
+}

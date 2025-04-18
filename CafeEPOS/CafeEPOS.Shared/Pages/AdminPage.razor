@@ -25,9 +25,10 @@
     else
     {
         <!--If there are items display all items-->
-        <QuickGrid Items="Staff" Pagination="state">
-            <PropertyColumn Property="@(x => x.Name)" Title="Parent Category" Sortable="true" />
+        <QuickGrid Items="Staff.AsQueryable()" Pagination="state">
+            <PropertyColumn Property="@(x => x.Name)" Title="Staff Name" />
             <PropertyColumn Property="@(x => x.staffId)" />
+            <PropertyColumn Property="@(x => x.role == 1 ? "Admin" : "Waiter")" Title="Role" Sortable="true"/>
 
 
             <TemplateColumn Context="items">
@@ -62,7 +63,7 @@
 
     PaginationState state = new PaginationState() { ItemsPerPage = 10 };
 
-    private IQueryable<StaffAccountReturnModel> Staff = null;
+    private IEnumerable<StaffAccountReturnModel> Staff = [];
 
     public async Task<string> getToken()
     {
@@ -78,7 +79,7 @@
 
     public void edit(int id)
     {
-
+        navigation.NavigateTo($"/editStaff/{id}");
     }
 
     public void remove(int id)

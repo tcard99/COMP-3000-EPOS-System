@@ -1,0 +1,49 @@
+﻿@using CafeEPOS.Shared.Models
+
+<div class="KDS-ticket" @onclick="OnClick">
+    <div class="KDS-ticket-header">
+        <p> Table: @Order.table</p>
+        <p> Placed: @Order.date.ToString("HH:mm")</p>
+    </div>
+    <div class="KDS-ticket-Items">
+        @foreach (var item in Order.items)
+        {
+            <p>@item.Name</p>
+        }
+    </div>
+</div>
+
+<Dialog open="openDialog" OkText="Yes" CancelText="No" OnResult="OnResult">
+    <Header>
+        Complete Order?
+    </Header>
+    <Body>
+        Do you want to complete this order?
+    </Body>
+</Dialog>
+
+@code
+{
+    [Parameter]
+    public required OrderInfoReturnModel Order { get; set; }
+
+    public bool openDialog { get; set; } = false;
+
+    public async Task OnClick()
+    {
+        openDialog = true;
+    }
+
+    public async Task OnResult(bool result)
+    {
+        openDialog = false;
+        if (result == true)
+        {
+           await CompleteOrder.InvokeAsync(Order.Id);
+        }
+    }
+
+    [Parameter]
+    public EventCallback<int> CompleteOrder { get; set; }
+
+}

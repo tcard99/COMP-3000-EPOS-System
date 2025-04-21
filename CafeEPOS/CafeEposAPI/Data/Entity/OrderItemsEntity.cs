@@ -17,6 +17,7 @@ namespace CafeEposAPI.Data.Entity
         public string status { get; set; }
         public DateTime placed { get; set; }
         public DateTime updated { get; set; }
+        [JsonIgnore]
         public OrderInfoEntity OrderInfo { get; set; }
     }
 }

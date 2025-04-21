@@ -34,13 +34,13 @@ namespace CafeEposAPI.Controllers
 
             if (orderId == null)
             {
-                var allOrders = _eposDbContext.OrderInfo.Where(x => x.sysAccountId == foundUser.Id);
+                var allOrders = _eposDbContext.OrderInfo.Where(x => x.sysAccountId == foundUser.Id).Include(x => x.items);
 
                 return allOrders.ToList();
             }
             else
             {
-                var foundOrder = _eposDbContext.OrderInfo.Where(x => x.sysAccountId == foundUser.Id && x.Id == orderId);
+                var foundOrder = _eposDbContext.OrderInfo.Where(x => x.sysAccountId == foundUser.Id && x.Id == orderId).Include(x => x.items);
 
                 if (foundOrder == null)
                 {
@@ -53,286 +53,307 @@ namespace CafeEposAPI.Controllers
             }
         }
 
-        //Method to create new order with or without items
-        [HttpPost("MakeOrder")]
-        public MakeOrderReturnModel MakeOrder(string sysAccountToken, MakeOrderModel orderModel)
+        //Method to get orders that are preparing
+        [HttpGet("GetOrderForKDS")]
+        public IEnumerable<OrderInfoEntity> GetOrdersForKDS(string sysAccountToken)
         {
             var foundUser = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == sysAccountToken);
 
             if (foundUser == null)
             {
-                return new MakeOrderReturnModel();
+                return new List<OrderInfoEntity>();
             }
 
-            //Fill in info for the orderInfo table 
-            var data = new OrderInfoEntity
+            var foundOrders = _eposDbContext.OrderInfo.Where(x => x.sysAccountId == foundUser.Id && x.status == "Preparing").Include(x => x.items);
+
+            if (foundOrders == null)
             {
-                sysAccountId = foundUser.Id,
-                waiterName = orderModel.WaiterName,
-                table = orderModel.Table,
-                date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0),
-                status = "Ordering",
-                ammountPaid = 0.00m,
-                total = 0.00m
-            };
-
-            //Go through all the items passed in 
-            foreach (var item in orderModel.Items)
-            {
-                //Find item fill in info 
-                var menuItem = _eposDbContext.Menu.Single(x => x.Id == item.ItemId);
-                var orderIt = new OrderItemsEntity
-                {
-                    sysAccountId = foundUser.Id,
-                    Name = menuItem.Name,
-                    price = menuItem.price,
-                    status = "Ordering",
-                    placed = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0),
-                    updated = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0)
-                };
-
-                data.total += menuItem.price;
-
-                data.items.Add(orderIt);
+                return new List<OrderInfoEntity>();
             }
 
-            //save to db 
-            _eposDbContext.OrderInfo.Add(data);
-            _eposDbContext.SaveChanges();
-
-            var order = new MakeOrderReturnModel
-            {
-                Id = data.Id
-            };
-
-            return order;
+            return foundOrders;
         }
 
-        //Method to add new items
-        [HttpPost("AddNewItems")]
-        public MakeOrderReturnModel AddMoreItems(string SysAccountToken, int orderId, List<OrderItemsMakeOrderModel> newItems)
+//Method to create new order with or without items
+[HttpPost("MakeOrder")]
+public MakeOrderReturnModel MakeOrder(string sysAccountToken, MakeOrderModel orderModel)
+{
+    var foundUser = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == sysAccountToken);
+
+    if (foundUser == null)
+    {
+        return new MakeOrderReturnModel();
+    }
+
+    //Fill in info for the orderInfo table 
+    var data = new OrderInfoEntity
+    {
+        sysAccountId = foundUser.Id,
+        waiterName = orderModel.WaiterName,
+        table = orderModel.Table,
+        date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0),
+        status = "Ordering",
+        ammountPaid = 0.00m,
+        total = 0.00m
+    };
+
+    //Go through all the items passed in 
+    foreach (var item in orderModel.Items)
+    {
+        //Find item fill in info 
+        var menuItem = _eposDbContext.Menu.Single(x => x.Id == item.ItemId);
+        var orderIt = new OrderItemsEntity
         {
-            var foundUser = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == SysAccountToken);
+            sysAccountId = foundUser.Id,
+            Name = menuItem.Name,
+            price = menuItem.price,
+            status = "Ordering",
+            placed = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0),
+            updated = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0)
+        };
 
-            if (foundUser == null)
-            {
-                return new MakeOrderReturnModel();
-            }
+        data.total += menuItem.price;
 
-            //FInd passed in order
-            var foundOrderInfo = _eposDbContext.OrderInfo.SingleOrDefault(x => x.Id == orderId);
+        data.items.Add(orderIt);
+    }
 
-            if (foundOrderInfo == null)
-            {
-                return new MakeOrderReturnModel();
-            }
+    //save to db 
+    _eposDbContext.OrderInfo.Add(data);
+    _eposDbContext.SaveChanges();
 
-            //Chaneg status 
-            foundOrderInfo.status = "Preparing";
+    var order = new MakeOrderReturnModel
+    {
+        Id = data.Id
+    };
 
-            //Add all new items
-            foreach (var item in newItems)
-            {
-                var menuItem = _eposDbContext.Menu.Single(x => x.Id == item.ItemId);
-                var orderIt = new OrderItemsEntity
-                {
-                    sysAccountId = foundUser.Id,
-                    Name = menuItem.Name,
-                    price = menuItem.price,
-                    status = "Preparing",
-                    placed = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0),
-                    updated = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0)
-                };
+    return order;
+}
 
-                //Calculate new total 
-                foundOrderInfo.total += menuItem.price;
+//Method to add new items
+[HttpPost("AddNewItems")]
+public MakeOrderReturnModel AddMoreItems(string SysAccountToken, int orderId, List<OrderItemsMakeOrderModel> newItems)
+{
+    var foundUser = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == SysAccountToken);
 
-                //Add new items to order
-                foundOrderInfo.items.Add(orderIt);
-            }
+    if (foundUser == null)
+    {
+        return new MakeOrderReturnModel();
+    }
 
-            var order = new MakeOrderReturnModel
-            {
-                Id = foundOrderInfo.Id
-            };
+    //FInd passed in order
+    var foundOrderInfo = _eposDbContext.OrderInfo.SingleOrDefault(x => x.Id == orderId);
 
-            _eposDbContext.SaveChanges();
+    if (foundOrderInfo == null)
+    {
+        return new MakeOrderReturnModel();
+    }
 
+    //Chaneg status 
+    foundOrderInfo.status = "Preparing";
 
-            return order;
-
-        }
-
-
-        //Mehtod to change status to Preparing
-        [HttpPut("ChangeStatPreparing")]
-        public bool ChangeStatusToPreparing(string sysAccountToken, int orderId)
+    //Add all new items
+    foreach (var item in newItems)
+    {
+        var menuItem = _eposDbContext.Menu.Single(x => x.Id == item.ItemId);
+        var orderIt = new OrderItemsEntity
         {
-            var foundUser = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == sysAccountToken);
+            sysAccountId = foundUser.Id,
+            Name = menuItem.Name,
+            price = menuItem.price,
+            status = "Preparing",
+            placed = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0),
+            updated = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0)
+        };
 
-            if (foundUser == null)
-            {
-                return false;
-            }
+        //Calculate new total 
+        foundOrderInfo.total += menuItem.price;
 
-            //Find passed in order and its items 
-            var foundOrderInfo = _eposDbContext.OrderInfo.Include(x => x.items).SingleOrDefault(x => x.Id == orderId);
+        //Add new items to order
+        foundOrderInfo.items.Add(orderIt);
+    }
+
+    var order = new MakeOrderReturnModel
+    {
+        Id = foundOrderInfo.Id
+    };
+
+    _eposDbContext.SaveChanges();
+
+
+    return order;
+
+}
+
+
+//Mehtod to change status to Preparing
+[HttpPut("ChangeStatPreparing")]
+public bool ChangeStatusToPreparing(string sysAccountToken, int orderId)
+{
+    var foundUser = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == sysAccountToken);
+
+    if (foundUser == null)
+    {
+        return false;
+    }
+
+    //Find passed in order and its items 
+    var foundOrderInfo = _eposDbContext.OrderInfo.Include(x => x.items).SingleOrDefault(x => x.Id == orderId);
 
 
 
-            if (foundOrderInfo == null)
-            {
-                return false;
-            }
+    if (foundOrderInfo == null)
+    {
+        return false;
+    }
 
-            //Change the status to Preparing
-            foundOrderInfo.status = "Preparing";
+    //Change the status to Preparing
+    foundOrderInfo.status = "Preparing";
 
-            //Go and change status of all items that have the ordering status
-            foreach (var item in foundOrderInfo.items.Where(x => x.status == "Ordering"))
-            {
-                item.status = "Preparing";
-                item.updated = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0);
-            }
+    //Go and change status of all items that have the ordering status
+    foreach (var item in foundOrderInfo.items.Where(x => x.status == "Ordering"))
+    {
+        item.status = "Preparing";
+        item.updated = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0);
+    }
 
-            try
-            {
-                _eposDbContext.SaveChanges();
+    try
+    {
+        _eposDbContext.SaveChanges();
 
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
+        return true;
+    }
+    catch (Exception ex)
+    {
+        return false;
+    }
+}
 
-        //Method to change status to Prepared
-        [HttpPut("ChangeStatPrepared")]
-        public bool ChangeStatusPrepared(string sysAccountToken, int orderId)
+//Method to change status to Prepared
+[HttpPut("ChangeStatPrepared")]
+public bool ChangeStatusPrepared(string sysAccountToken, int orderId)
+{
+    var foundUser = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == sysAccountToken);
+
+    if (foundUser == null)
+    {
+        return false;
+    }
+
+    //Find order with passed in id and its items
+    var foundOrderInfo = _eposDbContext.OrderInfo.Include(x => x.items).SingleOrDefault(x => x.Id == orderId);
+
+    if (foundOrderInfo == null)
+    {
+        return false;
+    }
+
+    //Change status to Prepared 
+    foundOrderInfo.status = "Prepared";
+
+    foreach (var item in foundOrderInfo.items.Where(x => x.status == "Preparing"))
+    {
+        //Chaneg item status to Prepared
+        item.status = "Prepared";
+        item.updated = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0);
+    }
+
+    try
+    {
+        _eposDbContext.SaveChanges();
+        return true;
+    }
+    catch (Exception ex)
+    {
+        return false;
+    }
+}
+
+//Method to change status to Closed
+[HttpPut("ChanegStatClosed")]
+public bool ChangeStatusClosed(string sysAccountToken, int orderId)
+{
+    var foundUser = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == sysAccountToken);
+
+    if (foundUser == null)
+    {
+        return false;
+    }
+
+    //Fidn passed in order and its items
+    var foundOrderInfo = _eposDbContext.OrderInfo.Include(x => x.items).SingleOrDefault(x => x.Id == orderId);
+
+    if (foundOrderInfo == null)
+    {
+        return false;
+    }
+
+    //Chaneg the status to paid
+    foundOrderInfo.status = "Closed";
+
+    //For each item change status to paid
+    foreach (var item in foundOrderInfo.items.Where(x => x.status == "Prepared"))
+    {
+        item.status = "Closed";
+        item.updated = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0);
+    }
+
+    try
+    {
+        _eposDbContext.SaveChanges();
+        return true;
+    }
+    catch (Exception ex)
+    {
+        return false;
+    }
+}
+
+//Method to update paid ammount
+[HttpPut("UpdatePaidAmmount")]
+public UpdatePayAmountReturnModel UpdatePaidAmmount(string sysAccountToken, UpdateAmmountPaidInfoModel model)
+{
+    var foundUser = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == sysAccountToken);
+
+    if (foundUser == null)
+    {
+        return new();
+    }
+
+    var foundOrderInfo = _eposDbContext.OrderInfo.SingleOrDefault(x => x.Id == model.OrderId);
+
+    if (foundOrderInfo == null)
+    {
+        return new();
+    }
+
+    //Update the ammount paid if less than total
+    foundOrderInfo.ammountPaid += model.AmmountPaid;
+
+    if (foundOrderInfo.ammountPaid >= foundOrderInfo.total)
+    {
+        //If ammount is paid change the state of the order
+        ChangeStatusToPreparing(sysAccountToken, model.OrderId);
+    }
+
+    try
+    {
+        _eposDbContext.SaveChanges();
+
+        //Return ammount due and total
+        var data = new UpdatePayAmountReturnModel
         {
-            var foundUser = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == sysAccountToken);
+            Id = foundOrderInfo.Id,
+            AmountDue = foundOrderInfo.total - foundOrderInfo.ammountPaid,
+            Total = foundOrderInfo.total
+        };
 
-            if (foundUser == null)
-            {
-                return false;
-            }
+        return data;
+    }
+    catch (Exception ex)
+    {
+        return new();
+    }
 
-            //Find order with passed in id and its items
-            var foundOrderInfo = _eposDbContext.OrderInfo.Include(x => x.items).SingleOrDefault(x => x.Id == orderId);
-
-            if (foundOrderInfo == null)
-            {
-                return false;
-            }
-
-            //Change status to Prepared 
-            foundOrderInfo.status = "Prepared";
-
-            foreach (var item in foundOrderInfo.items.Where(x => x.status == "Preparing"))
-            {
-                //Chaneg item status to Prepared
-                item.status = "Prepared";
-                item.updated = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0);
-            }
-
-            try
-            {
-                _eposDbContext.SaveChanges();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-
-        //Method to change status to Closed
-        [HttpPut("ChanegStatClosed")]
-        public bool ChangeStatusClosed(string sysAccountToken, int orderId)
-        {
-            var foundUser = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == sysAccountToken);
-
-            if (foundUser == null)
-            {
-                return false;
-            }
-
-            //Fidn passed in order and its items
-            var foundOrderInfo = _eposDbContext.OrderInfo.Include(x => x.items).SingleOrDefault(x => x.Id == orderId);
-
-            if (foundOrderInfo == null)
-            {
-                return false;
-            }
-
-            //Chaneg the status to paid
-            foundOrderInfo.status = "Closed";
-
-            //For each item change status to paid
-            foreach (var item in foundOrderInfo.items.Where(x => x.status == "Prepared"))
-            {
-                item.status = "Closed";
-                item.updated = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0);
-            }
-
-            try
-            {
-                _eposDbContext.SaveChanges();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-
-        //Method to update paid ammount
-        [HttpPut("UpdatePaidAmmount")]
-        public UpdatePayAmountReturnModel UpdatePaidAmmount(string sysAccountToken, UpdateAmmountPaidInfoModel model)
-        {
-            var foundUser = _eposDbContext.SystemAccounts.SingleOrDefault(x => x.Token == sysAccountToken);
-
-            if (foundUser == null)
-            {
-                return new();
-            }
-
-            var foundOrderInfo = _eposDbContext.OrderInfo.SingleOrDefault(x => x.Id == model.OrderId);
-
-            if (foundOrderInfo == null)
-            {
-                return new();
-            }
-
-            //Update the ammount paid if less than total
-            foundOrderInfo.ammountPaid += model.AmmountPaid;
-
-            if (foundOrderInfo.ammountPaid >= foundOrderInfo.total)
-            {
-                //If ammount is paid change the state of the order
-                ChangeStatusToPreparing(sysAccountToken, model.OrderId);
-            }
-
-            try
-            {
-                _eposDbContext.SaveChanges();
-
-                //Return ammount due and total
-                var data = new UpdatePayAmountReturnModel
-                {
-                    Id = foundOrderInfo.Id,
-                    AmountDue = foundOrderInfo.total - foundOrderInfo.ammountPaid,
-                    Total = foundOrderInfo.total
-                };
-
-                return data;
-            }
-            catch (Exception ex)
-            {
-                return new();
-            }
-
-        }
+}
     }
 }

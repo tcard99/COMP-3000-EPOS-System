@@ -89,7 +89,50 @@ namespace CafeEPOS.Shared.Services
             {
                 throw new Exception();
             }
+        }
 
+        //Method to get all preparing orders
+        public async Task<List<OrderInfoReturnModel>> GetPreparingOrders(string sysAccountToken)
+        {
+            //Set up paramter
+            var param = $"sysAccountToken={sysAccountToken}";
+
+            //Set up URL
+            var url = $"{baseApiUrl}OrderInfo/GetOrderForKDS?{param}";
+
+            var response = await _httpClient.GetAsync(url);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var newResponse = await response.Content.ReadFromJsonAsync<List<OrderInfoReturnModel>>();
+                return newResponse;
+            }
+            else
+            {
+                throw new Exception();
+            }
+        }
+
+        //MEthod to change state to prepared
+        public async Task<bool> ChangeStateToPrepared(string sysAccountToken, int orderId)
+        {
+            //Set up paramter
+            var param = $"sysAccountToken={sysAccountToken}&orderId={orderId}";
+
+            //Set up URL
+            var url = $"{baseApiUrl}OrderInfo/ChangeStatPrepared?{param}";
+
+            var response = await _httpClient.PutAsync(url, null);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var newResponse = await response.Content.ReadFromJsonAsync<bool>();
+                return newResponse;
+            }
+            else
+            {
+                throw new Exception();
+            }
         }
     }
 }

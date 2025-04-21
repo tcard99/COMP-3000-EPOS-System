@@ -284,3 +284,46 @@ td {
     .order-backButton:hover {
         background-color: #6c3baa;
     }
+
+
+.KDS-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    margin-top: 30px;
+    max-height: calc(100vh - 200px);
+    height: calc(100vh - 200px);
+}
+
+.KDS-ticket {
+    border 2px solid gray;
+    background-color: white;
+    margin: 5px;
+}
+
+.KDS-ticket-header {
+    background-color: lightcoral;
+    display: grid;
+    grid-template-columns: auto auto;
+}
+
+    .KDS-ticket-header p:last-child {
+        text-align: right;
+    }
+
+    .KDS-ticket-header p {
+        margin: 5px;
+    }
+
+.KDS-ticket-Items {
+    padding: 5px;
+}
+
+    .KDS-ticket-Items p {
+        margin: 0;
+    }
+
+.KDS-bottomButtons{
+    display:grid;
+    grid-template-columns: auto auto 100px;
+    margin: 10px;
+}

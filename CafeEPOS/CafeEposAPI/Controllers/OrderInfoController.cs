@@ -64,7 +64,7 @@ namespace CafeEposAPI.Controllers
                 return new List<OrderInfoEntity>();
             }
 
-            var foundOrders = _eposDbContext.OrderInfo.Where(x => x.sysAccountId == foundUser.Id && x.status == "Preparing").Include(x => x.items);
+            var foundOrders = _eposDbContext.OrderInfo.Where(x => x.sysAccountId == foundUser.Id && x.status == "Preparing").Include(x => x.items).OrderByDescending(x => x.date);
 
             if (foundOrders == null)
             {

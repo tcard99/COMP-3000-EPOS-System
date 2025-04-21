@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="_content/CafeEPOS.Shared/startingScreenStyles.css" />
 
 <img src="_content/CafeEPOS.Shared/images/ImagePlaceholder.png" width="100" height="100" class="logo" alt="Logo" />
-<h1 style="text-align:center; padding-top:50px">KDS System</h1>
+<h1 style="text-align:center; padding-top:50px">Kitchen Display System</h1>
 
 @if (orders != null)
 {
@@ -31,7 +31,7 @@
 
         <OrderPagination PageSize="4" Count="orders.Count()" CurrentPage="CurrentPage" CurrentPageChanged="OnPageChange"></OrderPagination>
 
-        <button @onclick="refresh" style="">Refresh</button>
+        <button @onclick="refresh" class="loginButton">Refresh</button>
     </div>
 }
 

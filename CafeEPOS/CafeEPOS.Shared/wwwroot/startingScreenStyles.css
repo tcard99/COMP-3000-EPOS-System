@@ -298,6 +298,7 @@ td {
     border 2px solid gray;
     background-color: white;
     margin: 5px;
+    overflow-y: auto;
 }
 
 .KDS-ticket-header {
@@ -324,6 +325,6 @@ td {
 
 .KDS-bottomButtons{
     display:grid;
-    grid-template-columns: auto auto 100px;
+    grid-template-columns: auto auto 250px;
     margin: 10px;
 }

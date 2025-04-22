@@ -50,12 +50,12 @@
     [Inject] LocalStorageService _localStorage { get; set; }
     [Inject] IFormFactor FF { get; set; }
     [Inject] IJSRuntime JS { get; set; }
+    [Inject] OrderService ordServ { get; set; }
 
     public CategoryService catServ = new CategoryService();
 
     public MenuService menServe = new MenuService();
 
-    public OrderService ordServ = new OrderService();
 
     //Store found categorys
     private List<CategoryModel> Categories { get; set; } = new List<CategoryModel>();

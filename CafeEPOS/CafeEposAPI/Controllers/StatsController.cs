@@ -53,7 +53,7 @@ namespace CafeEposAPI.Controllers
 
             //Raw SQL to calc avergae completion time cus linq being funny
             var avgPrepTime = _eposDbContext.Database
-                .SqlQueryRaw<int>($"Select avg(datediff(MINUTE, placed, updated)) as Value  from orderitems where convert(date, placed)='{currentDate:yyyy-MM-dd}'")
+                .SqlQueryRaw<int>($"Select avg(datediff(MINUTE, [date], updated)) as Value  from orderinfo where convert(date, [date])='{currentDate:yyyy-MM-dd}' and [status] = 'Prepared'")
                 .SingleOrDefault();
 
     var data = new StatsReturnModel

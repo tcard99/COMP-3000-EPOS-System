@@ -15,8 +15,8 @@ namespace CafeEPOS.Shared.Services
 {
     public class AuthenticationService
     {
-        private string baseApiUrl = "http://localhost:5123/";
-        //private string baseApiUrl = "https://web.socem.plymouth.ac.uk/comp3000/tcard-api/";
+        //private string baseApiUrl = "http://localhost:5123/";
+        private string baseApiUrl = "https://web.socem.plymouth.ac.uk/comp3000/tcard-api/";
 
         private static readonly HttpClient _httpClient = new HttpClient();
 

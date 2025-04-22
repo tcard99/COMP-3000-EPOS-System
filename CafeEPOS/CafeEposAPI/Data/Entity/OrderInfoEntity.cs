@@ -19,6 +19,7 @@ namespace CafeEposAPI.Data.Entity
         public required string status { get; set; }
         public decimal ammountPaid { get; set; }
         public required decimal total { get; set; }
+        public DateTime updated { get; set; }
         public Collection<OrderItemsEntity> items { get; set; } = [];
     }
 }

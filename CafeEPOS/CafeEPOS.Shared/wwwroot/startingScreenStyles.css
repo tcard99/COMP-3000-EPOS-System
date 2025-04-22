@@ -354,6 +354,8 @@ td {
     }
 
     .StatsSummaryBox img {
-        height:64px;
-        width:64px;
+        height: 32px;
+        width: 64px;
+        margin: 5px;
     }
+

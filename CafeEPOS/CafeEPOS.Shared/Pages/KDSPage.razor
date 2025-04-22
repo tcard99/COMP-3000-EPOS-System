@@ -45,7 +45,7 @@
 
     [Inject] LocalStorageService _localStorage { get; set; }
 
-    OrderService ordServ = new OrderService();
+    [Inject] OrderService ordServ { get; set; }
 
     private List<OrderInfoReturnModel> orders { get; set; }
 

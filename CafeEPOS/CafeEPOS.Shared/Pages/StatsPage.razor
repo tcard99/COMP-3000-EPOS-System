@@ -9,6 +9,7 @@
 @using System.Linq
 @using CafeEPOS.Shared.Components
 
+@inject StatsService statServ;
 
 <PageTitle>Stats</PageTitle>
 
@@ -18,18 +19,44 @@
 
 <h1 style="text-align:center; padding-top:50px">EPOS System</h1>
 
-<div class="StatsSummaryBox-wrapper">
-    <div class="StatsSummaryBox-Container">
-        <StatsSummaryBox Title="Daily Total" Value="50" IconPath="/images/SalesChart.svg"></StatsSummaryBox>
-        <StatsSummaryBox Title="Total Orders" Value="100" IconPath="/images/SalesChart.svg"></StatsSummaryBox>
-        <StatsSummaryBox Title="Orders Preparing" Value="3" IconPath="/images/SalesChart.svg"></StatsSummaryBox>
-        <StatsSummaryBox Title="Avg Prep Time" Value="10" IconPath="/images/SalesChart.svg"></StatsSummaryBox>
+@if (statItem != null)
+{
+    <div class="StatsSummaryBox-wrapper">
+        <div class="StatsSummaryBox-Container">
+            <StatsSummaryBox Title="Daily Total" Value="@statItem.Sales" IconPath="/images/GBPSymbol.svg"></StatsSummaryBox>
+            <StatsSummaryBox Title="Total Orders" Value="@statItem.TotalOrders" IconPath="/images/SalesChart.svg"></StatsSummaryBox>
+            <StatsSummaryBox Title="Orders Preparing" Value="@statItem.OrdersPreparing" IconPath="/images/Preparing.svg"></StatsSummaryBox>
+            <StatsSummaryBox Title="Avg Prep Time" Value="@statItem.AvgPrepTime" IconPath="/images/waiting.svg"></StatsSummaryBox>
+        </div>
     </div>
-</div>
+    <button class="backButton" style="margin:5px;" @onclick="Back">Back</button>
+}
 
 <script src="_content/CafeEPOS.Shared/js/site.js"></script>
 
-@code 
+@code
 {
+    [Inject] LocalStorageService _localStorage { get; set; }
 
+
+    public statsReturnModel statItem { get; set; }
+
+    public string token { get; set; }
+
+
+    public async Task<string> getToken()
+    {
+        return await _localStorage.GetValue("okten");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        token = await getToken();
+        statItem = (await statServ.GetStats(token));
+    }
+
+    public void Back()
+    {
+        navigation.NavigateTo("/EposDash");
+    }
 }

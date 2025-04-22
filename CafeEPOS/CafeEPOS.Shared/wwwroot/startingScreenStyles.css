@@ -323,8 +323,37 @@ td {
         margin: 0;
     }
 
-.KDS-bottomButtons{
-    display:grid;
+.KDS-bottomButtons {
+    display: grid;
     grid-template-columns: auto auto 250px;
     margin: 10px;
 }
+
+.StatsSummaryBox-wrapper {
+    height: calc(100vh - 200px);
+    max-height: calc(100vh - 200px);
+    margin-top: 30px;
+    background-color: white;
+}
+
+.StatsSummaryBox-Container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    margin: 5px;
+}
+
+.StatsSummaryBox {
+    border: solid 2px gray;
+    border-radius: 5px;
+    margin: 5px;
+    text-align: center;
+}
+
+    .StatsSummaryBox h2 {
+        font-size: small;
+    }
+
+    .StatsSummaryBox img {
+        height:64px;
+        width:64px;
+    }

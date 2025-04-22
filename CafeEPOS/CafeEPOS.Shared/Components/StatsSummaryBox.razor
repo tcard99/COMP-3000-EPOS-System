@@ -1,0 +1,22 @@
+﻿
+<div class="StatsSummaryBox">
+    <img src="@($"_content/CafeEPOS.Shared{IconPath}")" />
+    <h1>@Value</h1>
+    <h2>@Title</h2>
+</div>
+
+
+@code 
+{
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public decimal Value { get; set; }
+
+    [Parameter]
+    public string Format { get; set; } = "#";
+
+    [Parameter]
+    public string IconPath { get; set; } = string.Empty; 
+}

@@ -121,6 +121,30 @@ namespace CafeEPOS.Shared.Services
             }
         }
 
+        //Method to get all orders
+        public async Task<List<OrderInfoReturnModel>> GetAllPastOrders(string sysAccountToken)
+        {
+            using var httpClient = clientFactory.CreateClient("api");
+
+            //Set up paramter
+            var param = $"sysAccountToken={sysAccountToken}";
+
+            //Set up URL
+            var url = $"OrderInfo/GetOrders?{param}";
+
+            var response = await httpClient.GetAsync(url);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var newResponse = await response.Content.ReadFromJsonAsync<List<OrderInfoReturnModel>>();
+                return newResponse.Where(x => x.status == "Prepared").ToList();
+            }
+            else
+            {
+                throw new Exception();
+            }
+        }
+
         //MEthod to change state to prepared
         public async Task<bool> ChangeStateToPrepared(string sysAccountToken, int orderId)
         {

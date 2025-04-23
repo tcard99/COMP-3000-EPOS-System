@@ -1,4 +1,5 @@
 ﻿@page "/addStaff"
+@using CafeEPOS.Shared.Components
 @using CafeEPOS.Shared.Layout
 @layout NoLayout
 @inject NavigationManager navigation
@@ -42,6 +43,8 @@
 
 </div>
 
+<MessageDialog @ref="msgBox"></MessageDialog>
+
 <script src="_content/CafeEPOS.Shared/js/site.js"></script>
 
 
@@ -69,6 +72,7 @@
 
     public int optionSelectRole { get; set; }
 
+    private MessageDialog msgBox;
 
     //Get system account token
     public async Task<string> getToken()
@@ -93,14 +97,7 @@
     {
         if (newName == null || newName == "" || newStaffId == null || newStaffId == "" || newStaffPasscode == null || newStaffPasscode == "")
         {
-            if (FF.GetFormFactor().StartsWith("Web"))
-            {
-                await JS.InvokeVoidAsync("showAlert", "Please make sure all feilds are filled");
-            }
-            else
-            {
-                await Application.Current.MainPage.DisplayAlert("Alert", "Please make sure all feilds are filled", "OK");
-            }
+            msgBox.ShowMessage("Error", "Please make sure all feilds have been filled");
         }
         else
         {
@@ -109,27 +106,13 @@
 
             if (newStaff == true)
             {
-                if (FF.GetFormFactor().StartsWith("Web"))
-                {
-                    await JS.InvokeVoidAsync("showAlert", "Account Created");
-                }
-                else
-                {
-                    await Application.Current.MainPage.DisplayAlert("Alert", "Account Created", "OK");
-                }
+                msgBox.ShowMessage("Success", "Account Created");
 
                 navigation.NavigateTo("/Admin");
             }
             else
             {
-                if (FF.GetFormFactor().StartsWith("Web"))
-                {
-                    await JS.InvokeVoidAsync("showAlert", "Account Creation Failed");
-                }
-                else
-                {
-                    await Application.Current.MainPage.DisplayAlert("Alert", "Account Creation Failed", "OK");
-                }
+                msgBox.ShowMessage("Error", "Account Creation Failed");
                 navigation.NavigateTo("/Admin");
             }
 

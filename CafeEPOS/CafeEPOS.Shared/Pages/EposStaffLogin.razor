@@ -1,4 +1,5 @@
 ﻿@page "/EposStaffLogin"
+@using CafeEPOS.Shared.Components
 @using CafeEPOS.Shared.Layout
 @layout NoLayout
 @inject NavigationManager navigation
@@ -30,6 +31,8 @@
     </div>
 </div>
 
+<MessageDialog @ref="msgBox"></MessageDialog>
+
 <script src="_content/CafeEPOS.Shared/js/site.js"></script>
 
 @code
@@ -41,20 +44,15 @@
     public string usernameVal { get; set; }
     public string passwordVal { get; set; }
 
+    private MessageDialog msgBox;
+
     public async void login()
     {
         var token = await _localStorage.GetValue("okten");
 
         if (usernameVal == null || passwordVal == null)
         {
-            if (FF.GetFormFactor().StartsWith("Web"))
-            {
-                await JS.InvokeVoidAsync("showAlert", "Please enter all feilds");
-            }
-            else
-            {
-                await Application.Current.MainPage.DisplayAlert("Alert", "Please enter all feilds", "OK");
-            }
+            msgBox.ShowMessage("Error", "Please enter all fields");
         }
         else
         {
@@ -64,14 +62,7 @@
 
             if (login.Count() == 0)
             {
-                if (FF.GetFormFactor().StartsWith("Web"))
-                {
-                    await JS.InvokeVoidAsync("showAlert", $"Incorrect username or password");
-                }
-                else
-                {
-                    await Application.Current.MainPage.DisplayAlert("Alert", "Incorrect username or password", "OK");
-                }
+                msgBox.ShowMessage("Error", "Incorrect username or password");
             }
             else
             {

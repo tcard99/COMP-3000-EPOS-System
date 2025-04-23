@@ -1,4 +1,5 @@
 ﻿@page "/editStaff/{passedId}"
+@using CafeEPOS.Shared.Components
 @using CafeEPOS.Shared.Layout
 @layout NoLayout
 @inject NavigationManager navigation
@@ -60,6 +61,8 @@
 
 </div>
 
+<MessageDialog @ref="msgBox"></MessageDialog>
+
 <script src="_content/CafeEPOS.Shared/js/site.js"></script>
 
 
@@ -87,6 +90,7 @@
 
     public int optionSelectRole { get; set; }
 
+    private MessageDialog msgBox;
 
     //Get system account token
     public async Task<string> getToken()
@@ -118,14 +122,7 @@
     {
         if (newName == null || newName == "" || newStaffId == null || newStaffId == "" || newStaffPasscode == null || newStaffPasscode == "")
         {
-            if (FF.GetFormFactor().StartsWith("Web"))
-            {
-                await JS.InvokeVoidAsync("showAlert", "Please make sure all feilds are filled");
-            }
-            else
-            {
-                await Application.Current.MainPage.DisplayAlert("Alert", "Please make sure all feilds are filled", "OK");
-            }
+            msgBox.ShowMessage("Error", "Please make sure all fields are filled");
         }
         else
         {
@@ -133,44 +130,18 @@
 
             if (updateStaff == 2)
             {
-                if (FF.GetFormFactor().StartsWith("Web"))
-                {
-                    await JS.InvokeVoidAsync("showAlert", "User not found/Failed to save");
-                    navigation.NavigateTo("/Admin");
-                }
-                else
-                {
-                    await Application.Current.MainPage.DisplayAlert("Alert", "User not found/Failed to save", "OK");
-                    navigation.NavigateTo("/Admin");
-                }
+                msgBox.ShowMessage("Error", "User not found/failed to save");
+                navigation.NavigateTo("/Admin");
             }
             if (updateStaff == 1)
             {
-                if (FF.GetFormFactor().StartsWith("Web"))
-                {
-                    await JS.InvokeVoidAsync("showAlert", "User Updated");
-                    navigation.NavigateTo("/Admin");
-                }
-                else
-                {
-                    await Application.Current.MainPage.DisplayAlert("Alert", "User Updated", "OK");
-                    navigation.NavigateTo("/Admin");
-                }
-
+                msgBox.ShowMessage("Success", "User Updated");
                 navigation.NavigateTo("/Admin");
             }
             if (updateStaff == 0)
             {
-                if (FF.GetFormFactor().StartsWith("Web"))
-                {
-                    await JS.InvokeVoidAsync("showAlert", "Password Changed");
-                    navigation.NavigateTo("/Admin");
-                }
-                else
-                {
-                    await Application.Current.MainPage.DisplayAlert("Alert", "Password Changed", "OK");
-                    navigation.NavigateTo("/Admin");
-                }
+                msgBox.ShowMessage("Success", "Password Changed");
+                navigation.NavigateTo("/Admin");
             }
         }
     }

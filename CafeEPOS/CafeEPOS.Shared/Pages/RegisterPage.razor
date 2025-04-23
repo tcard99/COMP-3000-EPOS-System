@@ -1,4 +1,5 @@
 ﻿@page "/custRegister"
+@using CafeEPOS.Shared.Components
 @using CafeEPOS.Shared.Layout
 @layout NoLayout
 @inject NavigationManager navigation
@@ -40,6 +41,8 @@
     </div>
 </div>
 
+<MessageDialog @ref="msgBox"></MessageDialog>
+
 <script src="_content/CafeEPOS.Shared/js/site.js"></script>
 
 @code
@@ -54,31 +57,19 @@
     public string usernameVal { get; set; }
     public string passwordVal { get; set; }
 
+    private MessageDialog msgBox;
+
     public async void register()
     {
         if (orgNameVal == null || usernameVal == null || passwordVal == null)
         {
-            if (FF.GetFormFactor().StartsWith("Web"))
-            {
-                await JS.InvokeVoidAsync("showAlert", "Please enter all feilds");
-            }
-            else
-            {
-                await Application.Current.MainPage.DisplayAlert("Alert", "Please enter all feilds", "OK");
-            }
+            msgBox.ShowMessage("Error", "Please enter all fields");
         }
         else
         {
             if (EmailValidationService.isValidEmail(usernameVal) == false)
             {
-                if (FF.GetFormFactor().StartsWith("Web"))
-                {
-                    await JS.InvokeVoidAsync("showAlert", $"Please enter a valid email");
-                }
-                else
-                {
-                    await Application.Current.MainPage.DisplayAlert("Alert", "Please enter a valid email", "OK");
-                }
+                msgBox.ShowMessage("Error", "Please enter a valid email");
             }
             else
             {
@@ -88,14 +79,7 @@
 
                 if (register == "")
                 {
-                    if (FF.GetFormFactor().StartsWith("Web"))
-                    {
-                        await JS.InvokeVoidAsync("showAlert", $"Registration Faild");
-                    }
-                    else
-                    {
-                        await Application.Current.MainPage.DisplayAlert("Alert", "Registration Faild", "OK");
-                    }
+                    msgBox.ShowMessage("Error", "Registration failed");
                 }
                 else
                 {

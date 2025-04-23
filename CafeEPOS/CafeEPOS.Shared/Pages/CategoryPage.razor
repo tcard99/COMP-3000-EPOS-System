@@ -1,4 +1,5 @@
 ﻿@page "/category"
+@using CafeEPOS.Shared.Components
 @using CafeEPOS.Shared.Layout
 @layout NoLayout
 @inject NavigationManager navigation
@@ -48,6 +49,8 @@
 
 </div>
 
+<MessageDialog @ref="msgBox"></MessageDialog>
+
 <script src="_content/CafeEPOS.Shared/js/site.js"></script>
 
 @code
@@ -63,6 +66,8 @@
     PaginationState state = new PaginationState() { ItemsPerPage = 10 };
 
     public CategoryService catServ = new CategoryService();
+
+    private MessageDialog msgBox;
 
     //Get system account token
     public async Task<string> getToken()
@@ -99,14 +104,7 @@
         }
         else
         {
-            if (FF.GetFormFactor().StartsWith("Web"))
-            {
-                await JS.InvokeVoidAsync("showAlert", "Deletion Failed");
-            }
-            else
-            {
-                await Application.Current.MainPage.DisplayAlert("Alert", "Deletion Failed", "OK");
-            }
+            msgBox.ShowMessage("Error", "Deletion Failed");
         }
     }
 

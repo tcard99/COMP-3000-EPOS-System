@@ -1,4 +1,5 @@
 ﻿@page "/Admin"
+@using CafeEPOS.Shared.Components
 @using CafeEPOS.Shared.Layout
 @layout NoLayout
 @inject NavigationManager navigation
@@ -49,6 +50,8 @@
 
 </div>
 
+<MessageDialog @ref="msgBox"></MessageDialog>
+
 <script src="_content/CafeEPOS.Shared/js/site.js"></script>
 
 
@@ -67,6 +70,8 @@
     private IEnumerable<StaffAccountReturnModel> Staff = [];
 
     public string token { get; set; }
+
+    private MessageDialog msgBox;
 
     public async Task<string> getToken()
     {
@@ -95,14 +100,7 @@
         }
         else
         {
-            if (FF.GetFormFactor().StartsWith("Web"))
-            {
-                await JS.InvokeVoidAsync("showAlert", "User deletion failed");
-            }
-            else
-            {
-                await Application.Current.MainPage.DisplayAlert("Alert", "User deletion failed", "OK");
-            }
+            msgBox.ShowMessage("Error", "Account Removal Failed");
         }
     }
 

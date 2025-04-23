@@ -1,4 +1,5 @@
 ﻿@page "/addCategory"
+@using CafeEPOS.Shared.Components
 @using CafeEPOS.Shared.Layout
 @layout NoLayout
 @inject NavigationManager navigation
@@ -41,6 +42,8 @@
 
 </div>
 
+<MessageDialog @ref="msgBox"></MessageDialog>
+
 <script src="_content/CafeEPOS.Shared/js/site.js"></script>
 
 @code
@@ -64,7 +67,7 @@
 
     public CategoryService catService = new CategoryService();
 
-
+    private MessageDialog msgBox;
 
     //Get system account token
     public async Task<string> getToken()
@@ -84,14 +87,7 @@
         //Check to see if a name has been entered
         if (newCatName == null || newCatName == "")
         {
-              if (FF.GetFormFactor().StartsWith("Web"))
-            {
-                await JS.InvokeVoidAsync("showAlert", "Please enter a name");
-            }
-            else
-            {
-                await Application.Current.MainPage.DisplayAlert("Alert", "Please enter a name", "OK");
-            }
+            msgBox.ShowMessage("Error", "Please enter a name");
         }
         else
         {
@@ -105,14 +101,7 @@
             }
             else
             {
-                  if (FF.GetFormFactor().StartsWith("Web"))
-            {
-                await JS.InvokeVoidAsync("showAlert", "failed to add category");
-            }
-            else
-            {
-                await Application.Current.MainPage.DisplayAlert("Alert", "failed to add category", "OK");
-            }
+                msgBox.ShowMessage("Error", "Failed to add category");
                 navigation.NavigateTo("/category");
             }
         }

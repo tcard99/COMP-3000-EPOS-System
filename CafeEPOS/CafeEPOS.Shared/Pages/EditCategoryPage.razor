@@ -1,0 +1,128 @@
+﻿@page "/editCategory/{passedId}"
+@using CafeEPOS.Shared.Components
+@using CafeEPOS.Shared.Layout
+@layout NoLayout
+@inject NavigationManager navigation
+@using Microsoft.Maui.Controls
+@using CafeEPOS.Shared.Services
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Models
+@using System.Linq
+
+<PageTitle> Edit Category</PageTitle>
+
+<link rel="stylesheet" href="_content/CafeEPOS.Shared/startingScreenStyles.css" />
+
+<img src="_content/CafeEPOS.Shared/images/eposLogo.png" width="100" height="100" class="logo" alt="Logo" />
+<h1 style="text-align:center; padding-top:50px; margin-bottom:175px;">EASY ORDER EPOS SYSTEM</h1>
+
+
+<div class="container-fluid1">
+    <h2 style="text-align:center;">Edit Category</h2>
+
+    <select class="CatDropDown" @bind="parentCatId">
+        <option value="">Choose if parent</option>
+        @foreach (var cat in parentCategorys)
+        {
+            <option value="@cat.Id">@cat.Name</option>
+        }
+    </select>
+
+    <br />
+
+    <input type="text" placeholder="Enter category name" style="text-align:center; width:50%; border-radius:50px;" @bind="newCatName" />
+
+
+    <div class="container-fluid1">
+        <div class="LoginBackContainer">
+            <button class="backButton" @onclick="back">Back</button>
+            <button class="loginButton" @onclick="update">Update</button>
+        </div>
+    </div>
+
+</div>
+
+<MessageDialog @ref="msgBox"></MessageDialog>
+
+<script src="_content/CafeEPOS.Shared/js/site.js"></script>
+
+@code
+{
+    [Inject] IJSRuntime JS { get; set; }
+
+    [Inject] IFormFactor FF { get; set; }
+
+    [Inject] LocalStorageService _localStorage { get; set; }
+
+
+    //Store found parent categorys
+    public List<CategoryModel> parentCategorys { get; set; } = new List<CategoryModel>();
+    public List<CategoryModel> foundCategory { get; set; } = new List<CategoryModel>();
+
+    [Parameter] public string passedId { get; set; }
+    //Selected parent id
+    public int? parentCatId { get; set; }
+
+    //Inputted cat name
+    public string newCatName { get; set; }
+
+    public string token { get; set; }
+
+    public CategoryService catService = new CategoryService();
+
+    private MessageDialog msgBox;
+
+    //Get system account token
+    public async Task<string> getToken()
+    {
+        return await _localStorage.GetValue("okten");
+    }
+
+    //Method to go back to previous page
+    public void back()
+    {
+        navigation.NavigateTo("/category");
+    }
+
+    //Method to add a new category
+    public async void update()
+    {
+        var token = await getToken();
+
+        if (newCatName == null || newCatName == "")
+        {
+            msgBox.ShowMessage("Error", "Please enter a name");
+        }
+        else
+        {
+            var updatedCat = await catService.UpdateExisitngCategory(token, parentCatId, int.Parse(passedId), newCatName);
+
+            if (updatedCat == true)
+            {
+                navigation.NavigateTo("/category");
+            }
+            else
+            {
+                msgBox.ShowMessage("Error", "Failed to update");
+                navigation.NavigateTo("/category");
+            }
+        }
+    }
+
+    //Method to get all parent categories on page load
+    protected async override Task OnInitializedAsync()
+    {
+        //Get Token
+        token = await getToken();
+
+        //Find all parent Categories
+        parentCategorys = (await catService.GetAllParentCategories(token)).Where(x => x.Id != int.Parse(passedId)).ToList();
+
+        //Find the passed in category
+        foundCategory = (await catService.GetSingleCategory(token, int.Parse(passedId))).ToList();
+
+        //Set value of name and parent category to found values
+        newCatName = foundCategory.FirstOrDefault().Name;
+        parentCatId = foundCategory.FirstOrDefault().parentId;
+    }
+}

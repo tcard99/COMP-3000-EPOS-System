@@ -1,0 +1,88 @@
+﻿@page "/PrevOrderOverview"
+@using CafeEPOS.Shared.Components
+@using CafeEPOS.Shared.Layout
+@layout NoLayout
+@inject NavigationManager navigation
+@using Microsoft.Maui.Controls
+@using CafeEPOS.Shared.Services
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Models
+@using System.Linq
+
+
+<PageTitle>PrevOrderOverView</PageTitle>
+
+<link rel="stylesheet" href="_content/CafeEPOS.Shared/startingScreenStyles.css" />
+
+<img src="_content/CafeEPOS.Shared/images/eposLogo.png" width="100" height="100" class="logo" alt="Logo" />
+<h1 style="text-align:center; padding-top:50px">EASY ORDER EPOS SYSTEM</h1>
+<h2 style="text-align:center;">Previous Orders</h2>
+
+<div class="container-fluid1">
+
+    @if (Orders == null)
+    {
+        <p>No Staff Found</p>
+    }
+    else
+    {
+        <!--If there are items display all items-->
+        <QuickGrid Items="Orders" Pagination="state">
+            <PropertyColumn Property="@(x => x.table)" Title="Table" />
+            <PropertyColumn Property="@(x => x.total)" Title="Total" />
+            <PropertyColumn Property="@(x => x.date)" Title="Date" />
+
+
+            <TemplateColumn Context="items">
+                <button @onclick="() => View(items.Id)">View</button>
+            </TemplateColumn>
+        </QuickGrid>
+
+        <Paginator State="state" />
+    }
+
+    <div class="container-fluid1">
+        <div class="LoginBackContainer">
+            <button class="backButton" @onclick="back">Back</button>
+        </div>
+    </div>
+</div>
+
+<MessageDialog @ref="test"></MessageDialog>
+
+@code
+{
+    private MessageDialog test;
+
+    [Inject] IJSRuntime JS { get; set; }
+    [Inject] LocalStorageService _localStorage { get; set; }
+    [Inject] OrderService ordServ { get; set; }
+
+    private string token { get; set; }
+
+    PaginationState state = new PaginationState() { ItemsPerPage = 10 };
+
+    private IQueryable<OrderInfoReturnModel> Orders { get; set; }
+
+    public async Task<string> getToken()
+    {
+        return await _localStorage.GetValue("okten");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        token = await getToken();
+        Orders = (await ordServ.GetAllPastOrders(token)).AsQueryable();
+    }
+
+    public void View(int id)
+    {
+
+    }
+
+    public void back()
+    {
+        navigation.NavigateTo("/EposDash");
+    }
+
+}

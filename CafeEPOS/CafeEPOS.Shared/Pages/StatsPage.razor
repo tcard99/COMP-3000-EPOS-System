@@ -1,0 +1,62 @@
+﻿@page "/Stats"
+@using CafeEPOS.Shared.Layout
+@layout NoLayout
+@inject NavigationManager navigation
+@using Microsoft.Maui.Controls
+@using CafeEPOS.Shared.Services
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Models
+@using System.Linq
+@using CafeEPOS.Shared.Components
+
+@inject StatsService statServ;
+
+<PageTitle>Stats</PageTitle>
+
+<link rel="stylesheet" href="_content/CafeEPOS.Shared/startingScreenStyles.css" />
+
+<img src="_content/CafeEPOS.Shared/images/eposLogo.png" width="100" height="100" class="logo" alt="Logo" />
+
+<h1 style="text-align:center; padding-top:50px">EASY ORDER EPOS SYSTEM</h1>
+
+@if (statItem != null)
+{
+    <div class="StatsSummaryBox-wrapper">
+        <div class="StatsSummaryBox-Container">
+            <StatsSummaryBox Title="Daily Total" Value="@statItem.Sales" IconPath="/images/GBPSymbol.svg"></StatsSummaryBox>
+            <StatsSummaryBox Title="Total Orders" Value="@statItem.TotalOrders" IconPath="/images/SalesChart.svg"></StatsSummaryBox>
+            <StatsSummaryBox Title="Orders Preparing" Value="@statItem.OrdersPreparing" IconPath="/images/Preparing.svg"></StatsSummaryBox>
+            <StatsSummaryBox Title="Avg Prep Time" Value="@statItem.AvgPrepTime" IconPath="/images/waiting.svg"></StatsSummaryBox>
+        </div>
+    </div>
+    <button class="backButton" style="margin:5px;" @onclick="Back">Back</button>
+}
+
+<script src="_content/CafeEPOS.Shared/js/site.js"></script>
+
+@code
+{
+    [Inject] LocalStorageService _localStorage { get; set; }
+
+
+    public statsReturnModel statItem { get; set; }
+
+    public string token { get; set; }
+
+
+    public async Task<string> getToken()
+    {
+        return await _localStorage.GetValue("okten");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        token = await getToken();
+        statItem = (await statServ.GetStats(token));
+    }
+
+    public void Back()
+    {
+        navigation.NavigateTo("/EposDash");
+    }
+}

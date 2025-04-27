@@ -10,6 +10,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CafeEPOS.Web", "CafeEPOS.We
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CafeEPOS.Web.Client", "CafeEPOS.Web.Client\CafeEPOS.Web.Client.csproj", "{6132FF2F-2328-43A2-A6AD-5FBF1CF3C3CF}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CafeEposAPI", "CafeEposAPI\CafeEposAPI.csproj", "{190570D6-F7CA-443C-A82D-7E257B42C1E1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{6132FF2F-2328-43A2-A6AD-5FBF1CF3C3CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6132FF2F-2328-43A2-A6AD-5FBF1CF3C3CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6132FF2F-2328-43A2-A6AD-5FBF1CF3C3CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{190570D6-F7CA-443C-A82D-7E257B42C1E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{190570D6-F7CA-443C-A82D-7E257B42C1E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{190570D6-F7CA-443C-A82D-7E257B42C1E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{190570D6-F7CA-443C-A82D-7E257B42C1E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -6,11 +6,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents()
-    .AddInteractiveWebAssemblyComponents();
+    .AddInteractiveServerComponents();
+    //.AddInteractiveWebAssemblyComponents();
 
 // Add device-specific services used by the CafeEPOS.Shared project
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
+
+builder.Services.AddTransient<LocalStorageService, LocalStorageService>();
+
+builder.Services.AddEposServices();
 
 var app = builder.Build();
 
@@ -33,7 +37,7 @@ app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
-    .AddInteractiveWebAssemblyRenderMode()
+    //.AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(
         typeof(CafeEPOS.Shared._Imports).Assembly,
         typeof(CafeEPOS.Web.Client._Imports).Assembly);

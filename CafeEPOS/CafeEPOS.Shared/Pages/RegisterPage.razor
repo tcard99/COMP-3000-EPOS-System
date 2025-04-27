@@ -1,10 +1,93 @@
 ﻿@page "/custRegister"
+@using CafeEPOS.Shared.Components
 @using CafeEPOS.Shared.Layout
 @layout NoLayout
+@inject NavigationManager navigation
+@using Microsoft.Maui.Controls
+@using CafeEPOS.Shared.Services
 
 
-<h1>RegisterPage</h1>
+<PageTitle>Account Register</PageTitle>
 
-@code {
+<link rel="stylesheet" href="_content/CafeEPOS.Shared/startingScreenStyles.css" />
 
+<img src="_content/CafeEPOS.Shared/images/eposLogo.png" width="100" height="100" class="logo" alt="Logo" />
+<h1 style="text-align:center; padding-top:50px">EASY ORDER EPOS SYSTEM</h1>
+
+<!--Put register title and userinputs/buttons in center and middle of page-->
+<div class="container-fluid1">
+    <h2>Register</h2>
+
+    <!--Org Name input-->
+    <input type="text" placeholder="Enter Organisation Name" @bind="orgNameVal" style="text-align:center; width:50%; border-radius:50px;" />
+
+    <br />
+
+    <!--Email Input-->
+    <input type="email" placeholder="Enter Email" @bind="usernameVal" style="text-align:center; width:50%; border-radius:50px;" />
+
+    <br />
+
+    <!--Password input-->
+    <input type="password" placeholder="Enter Password" @bind="passwordVal" style="text-align:center; width:50%; border-radius:50px;" />
+
+    <!--Allow buttons to be next to each other underneith user input boxes-->
+    <div class="LoginBackContainer">
+        <a href="/">
+            <button class="backButton">Back</button>
+        </a>
+
+        <button class="loginButton" @onclick="register">Register</button>
+    </div>
+</div>
+
+<MessageDialog @ref="msgBox"></MessageDialog>
+
+<script src="_content/CafeEPOS.Shared/js/site.js"></script>
+
+@code
+{
+    [Inject] IJSRuntime JS { get; set; }
+
+    [Inject] IFormFactor FF { get; set; }
+
+    [Inject] LocalStorageService _localStorage { get; set; }
+
+    public string orgNameVal { get; set; }
+    public string usernameVal { get; set; }
+    public string passwordVal { get; set; }
+
+    private MessageDialog msgBox;
+
+    public async void register()
+    {
+        if (orgNameVal == null || usernameVal == null || passwordVal == null)
+        {
+            msgBox.ShowMessage("Error", "Please enter all fields");
+        }
+        else
+        {
+            if (EmailValidationService.isValidEmail(usernameVal) == false)
+            {
+                msgBox.ShowMessage("Error", "Please enter a valid email");
+            }
+            else
+            {
+                var authService = new AuthenticationService();
+
+                var register = await authService.SystemAccountRegistrationCall(orgNameVal, usernameVal, passwordVal);
+
+                if (register == "")
+                {
+                    msgBox.ShowMessage("Error", "Registration failed");
+                }
+                else
+                {
+                    await _localStorage.StoreValue("okten", register);
+                    navigation.NavigateTo("/SystemChoosePage");
+                }
+            }
+        }
+    }
 }
+

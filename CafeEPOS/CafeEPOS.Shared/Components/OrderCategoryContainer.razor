@@ -1,0 +1,73 @@
+﻿@using CafeEPOS.Shared.Models
+@using CafeEPOS.Shared.Services
+@inject NavigationManager navigation
+
+<div class="order-menu-wrappper">
+    <div class="order-categories">
+
+        @foreach (var item in Categories.Where(x => x.parentId == SelectedCategory?.Id || x.Id == SelectedCategory?.Id)
+        .OrderBy(x => x.parentId))
+        {
+
+            <div class="order-categories-items" @onclick="() => OnClick(item)">@item.Name</div>
+
+        }
+        @if (SelectedCategory != null)
+        {
+            <div class="order-categories-items" @onclick="OnBack">Back</div>
+        }
+    </div>
+    <div class="order-container-footer">
+        <button class="order-backButton" @onclick="BackPage">Main Menu</button>
+    </div>
+</div>
+@code
+{
+    [Inject] LocalStorageService _localStorage { get; set; }
+
+    [Parameter]
+    public IEnumerable<CategoryModel> Categories { get; set; } = [];
+
+    [Parameter]
+    public CategoryModel? SelectedCategory { get; set; }
+
+    [Parameter]
+    public EventCallback<CategoryModel> OnCategoryChanged { get; set; }
+
+    private Stack<CategoryModel?> PrevSelectedCategory { get; set; } = [];
+
+    //Updates selected Category
+    private async Task OnClick(CategoryModel item)
+    {
+        if (SelectedCategory == item)
+        {
+            return;
+        }
+        PrevSelectedCategory.Push(SelectedCategory);
+        SelectedCategory = item;
+        await OnCategoryChanged.InvokeAsync(item);
+    }
+
+    //Upates selected category
+    private async Task OnBack()
+    {
+        SelectedCategory = PrevSelectedCategory.Pop(); ;
+        await OnCategoryChanged.InvokeAsync(SelectedCategory);
+    }
+
+    //Method to go back a page
+    public async void BackPage()
+    {
+        var role = await _localStorage.GetValue("role");
+
+        if (role == "1")
+        {
+            navigation.NavigateTo("/EposDash");
+        }
+        else
+        {
+            navigation.NavigateTo("/StdEposDash");
+        }
+    }
+
+}

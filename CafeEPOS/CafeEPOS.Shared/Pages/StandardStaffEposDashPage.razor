@@ -1,0 +1,86 @@
+﻿@page "/StdEposDash"
+@using CafeEPOS.Shared.Layout
+@layout NoLayout
+@inject NavigationManager navigation
+@using Microsoft.Maui.Controls
+@using CafeEPOS.Shared.Services
+
+<PageTitle>Epos Dash</PageTitle>
+
+<link rel="stylesheet" href="_content/CafeEPOS.Shared/startingScreenStyles.css" />
+
+<img src="_content/CafeEPOS.Shared/images/eposLogo.png" width="100" height="100" class="logo" alt="Logo" />
+<h1 style="text-align:center; padding-top:50px">EASY ORDER EPOS SYSTEM</h1>
+
+<div class="table-containter">
+    <table>
+        <tr>
+            <td></td>
+            <td><button class="gird-button" @onclick="Order">Order</button></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+<div class="container-fluid1" style="height:150px">
+    <div class="LoginBackContainer">
+        <button class="backButton" @onclick="logout">Logout</button>
+    </div>
+</div>
+
+
+<script src="_content/CafeEPOS.Shared/js/site.js"></script>
+
+@code
+{
+    [Inject] IJSRuntime JS { get; set; }
+    [Inject] IFormFactor FF { get; set; }
+    [Inject] LocalStorageService _localStorage { get; set; }
+
+
+    public void Order()
+    {
+        navigation.NavigateTo("/Order");
+    }
+
+    public void Menu()
+    {
+        navigation.NavigateTo("/menu");
+    }
+
+    public void Category()
+    {
+        navigation.NavigateTo("/category");
+    }
+
+    public void Reports()
+    {
+
+    }
+
+    public void Tables()
+    {
+
+    }
+
+    public void Admin()
+    {
+
+    }
+
+
+
+    //Logout button method
+    public void logout()
+    {
+        _localStorage.RemoveValue("role");
+        _localStorage.RemoveValue("name");
+        navigation.NavigateTo("/EposStaffLogin");
+    }
+
+}

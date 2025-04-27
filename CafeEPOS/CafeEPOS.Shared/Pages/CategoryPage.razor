@@ -1,0 +1,115 @@
+﻿@page "/category"
+@using CafeEPOS.Shared.Components
+@using CafeEPOS.Shared.Layout
+@layout NoLayout
+@inject NavigationManager navigation
+@using Microsoft.Maui.Controls
+@using CafeEPOS.Shared.Services
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Models
+@using System.Linq
+
+<PageTitle>Category</PageTitle>
+
+<link rel="stylesheet" href="_content/CafeEPOS.Shared/startingScreenStyles.css" />
+
+<img src="_content/CafeEPOS.Shared/images/eposLogo.png" width="100" height="100" class="logo" alt="Logo" />
+<h1 style="text-align:center; padding-top:50px">EASY ORDER EPOS SYSTEM</h1>
+<h2 style="text-align:center;">Category</h2>
+
+
+<div class="container-fluid1">
+    <!--Check to see if there are any items-->
+    @if (items == null)
+    {
+        <p>No categoies Found</p>
+    }
+    else
+    {
+        <!--If there are items display all items-->
+        <QuickGrid Items="items" Pagination="state">
+            <PropertyColumn Property="@(x => x.parentName)" Title="Parent Category" Sortable="true" />
+            <PropertyColumn Property="@(x => x.Name)" />
+
+            <TemplateColumn Context="items">
+                <button @onclick="() => edit(items.Id)">Edit</button>
+                <button @onclick="() => remove(items.Id)">Remove</button>
+            </TemplateColumn>
+        </QuickGrid>
+
+        <Paginator State="state" />
+    }
+
+    <div class="container-fluid1">
+        <div class="LoginBackContainer">
+            <button class="backButton" @onclick="back">Back</button>
+            <button class="loginButton" @onclick="add">Add</button>
+        </div>
+    </div>
+
+</div>
+
+<MessageDialog @ref="msgBox"></MessageDialog>
+
+<script src="_content/CafeEPOS.Shared/js/site.js"></script>
+
+@code
+{
+    [Inject] IJSRuntime JS { get; set; }
+
+    [Inject] IFormFactor FF { get; set; }
+
+    [Inject] LocalStorageService _localStorage { get; set; }
+
+    private IQueryable<CategoryModel> items = null;
+
+    PaginationState state = new PaginationState() { ItemsPerPage = 10 };
+
+    public CategoryService catServ = new CategoryService();
+
+    private MessageDialog msgBox;
+
+    //Get system account token
+    public async Task<string> getToken()
+    {
+        return await _localStorage.GetValue("okten");
+    }
+
+    //On page load retive all menu items from Db
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await getToken();
+        items = (await catServ.GetAllCategoiesCall(token)).AsQueryable();
+
+    }
+
+    public void back()
+    {
+        navigation.NavigateTo("/EposDash");
+    }
+
+    public void add()
+    {
+        navigation.NavigateTo("/addCategory");
+    }
+
+    public async void remove(int id)
+    {
+        var token = await getToken();
+        var result = await catServ.SoftDeleteCatCall(token, id);
+
+        if (result == true)
+        {
+            navigation.NavigateTo("/EposDash");
+        }
+        else
+        {
+            msgBox.ShowMessage("Error", "Deletion Failed");
+        }
+    }
+
+    public void edit(int id)
+    {
+        navigation.NavigateTo($"/editCategory/{id}");
+    }
+}

@@ -1,0 +1,123 @@
+﻿@page "/addStaff"
+@using CafeEPOS.Shared.Components
+@using CafeEPOS.Shared.Layout
+@layout NoLayout
+@inject NavigationManager navigation
+@using Microsoft.Maui.Controls
+@using CafeEPOS.Shared.Services
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Models
+@using System.Linq
+
+<PageTitle> Add Staff</PageTitle>
+
+<link rel="stylesheet" href="_content/CafeEPOS.Shared/startingScreenStyles.css" />
+
+<img src="_content/CafeEPOS.Shared/images/eposLogo.png" width="100" height="100" class="logo" alt="Logo" />
+<h1 style="text-align:center; padding-top:50px; margin-bottom:175px;">EASY ORDER EPOS SYSTEM</h1>
+
+
+<div class="container-fluid1" style="height:50px;">
+    <h2 style="text-salign:center;">Add Staff</h2>
+
+
+
+    <input type="text" placeholder="Enter name" style="text-align:center; width:50%; border-radius:50px;" @bind="newName" />
+    <br />
+    <input type="text" placeholder="Enter staff Id" style="text-align:center; width:50%; border-radius:50px;" @bind="newStaffId" />
+    <br />
+    <input type="password" placeholder="Enter staff Id" style="text-align:center; width:50%; border-radius:50px;" @bind="newStaffPasscode" />
+    <br />
+    <select class="CatDropDown" @bind="optionSelectRole">
+        <option value="1">Admin</option>
+        <option value="0">Waiter</option>
+    </select>
+
+
+    <div class="container-fluid1">
+        <div class="LoginBackContainer">
+            <button class="backButton" @onclick="back">Back</button>
+            <button class="loginButton" @onclick="add">Add</button>
+        </div>
+    </div>
+
+</div>
+
+<MessageDialog @ref="msgBox"></MessageDialog>
+
+<script src="_content/CafeEPOS.Shared/js/site.js"></script>
+
+
+@code
+{
+    [Inject] IJSRuntime JS { get; set; }
+
+    [Inject] IFormFactor FF { get; set; }
+
+    [Inject] LocalStorageService _localStorage { get; set; }
+
+    [Parameter] public string passedId { get; set; }
+
+    AdminService adminServ = new AdminService();
+
+    public StaffAccountReturnModel foundStaff { get; set; }
+
+    public string token { get; set; }
+
+    //values for updating staff info
+    public string newName { get; set; }
+    public string newStaffId { get; set; }
+    public string newStaffPasscode { get; set; }
+    public int role { get; set; }
+
+    public int optionSelectRole { get; set; }
+
+    private MessageDialog msgBox;
+
+    //Get system account token
+    public async Task<string> getToken()
+    {
+        return await _localStorage.GetValue("okten");
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        //Get Token
+        token = await getToken();
+    }
+
+
+    public void back()
+    {
+        navigation.NavigateTo("/Admin");
+    }
+
+
+    public async void add()
+    {
+        if (newName == null || newName == "" || newStaffId == null || newStaffId == "" || newStaffPasscode == null || newStaffPasscode == "")
+        {
+            msgBox.ShowMessage("Error", "Please make sure all feilds have been filled");
+        }
+        else
+        {
+            //Call service method to call add new staff
+            var newStaff = await adminServ.AddNewStaffAccount(token, newName, newStaffId, newStaffPasscode, optionSelectRole);
+
+            if (newStaff == true)
+            {
+                msgBox.ShowMessage("Success", "Account Created");
+
+                navigation.NavigateTo("/Admin");
+            }
+            else
+            {
+                msgBox.ShowMessage("Error", "Account Creation Failed");
+                navigation.NavigateTo("/Admin");
+            }
+
+        }
+    }
+}
+
+}

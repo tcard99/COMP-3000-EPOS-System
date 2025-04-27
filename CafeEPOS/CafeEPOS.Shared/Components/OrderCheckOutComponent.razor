@@ -1,0 +1,43 @@
+﻿@using CafeEPOS.Shared.Models
+
+<div class="order-menu-wrappper">
+    <div class="order-checkout-wrapper">
+
+        @foreach (var item in OrderModel.Items)
+        {
+            <div class="order-checkout-item">
+                <p>@item.Name</p>
+                <p>@item.Price</p>
+                <button @onclick="() => Remove(item)">X</button>
+            </div>
+        }
+    </div>
+    <div class="order-checkout-footer">
+        <p>£ @OrderModel.Total</p>
+        <button @onclick="Pay">Pay</button>
+    </div>
+</div>
+
+@code
+{
+    [Parameter]
+    public OrderModel OrderModel { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<OrderItemsModel> OnRemove { get; set; }
+
+    private decimal total { get; set; }
+
+    public async void Remove(OrderItemsModel item)
+    {
+        await OnRemove.InvokeAsync(item);
+    }
+
+    [Parameter]
+    public EventCallback<OrderModel> OnPay { get; set; } 
+
+    public async void Pay()
+    {
+        await OnPay.InvokeAsync();
+    }
+}

@@ -1,0 +1,72 @@
+﻿@using CafeEPOS.Shared.Models
+
+
+<div class="order-container-wrapper">
+
+    <div class="order-container">
+        <div class="order-items">
+            <OrderCategoryContainer Categories="Categories" OnCategoryChanged="OnSelectedCategoryChanged"></OrderCategoryContainer>
+        </div>
+
+        <div class="order-items">
+
+            <OrderMenuContainer MenuItems="MenuItems.Where(x => x.categoryId == SelectedCategory?.Id)" OnChosenItemClicked="OnMenuItemClicked"></OrderMenuContainer>
+
+        </div>
+
+        <div class="order-items-checkout">
+
+            <OrderCheckOutComponent OrderModel="Order" OnRemove="OnRemoveOrderItem" OnPay="Pay"></OrderCheckOutComponent>
+
+        </div>
+    </div>
+</div>
+
+@code
+{
+    //Category Container Component stuff
+    [Parameter]
+    public IEnumerable<CategoryModel> Categories { get; set; } = [];
+
+    private CategoryModel? SelectedCategory { get; set; }
+
+    private async Task OnSelectedCategoryChanged(CategoryModel category)
+    {
+        SelectedCategory = category;
+        StateHasChanged();
+    }
+
+    //Menu Container Component Stuff
+    [Parameter]
+    public IEnumerable<MenuModel> MenuItems { get; set; } = [];
+
+    [Parameter]
+    public OrderModel Order { get; set; }
+
+    //Method to store selcted meny items
+    private void OnMenuItemClicked(MenuModel item)
+    {
+        Order.Items.Add(new()
+            {
+                ItemId = item.Id,
+                Name = item.Name,
+                Price = item.price
+            });
+        StateHasChanged();
+    }
+
+    //MEthod to remove a selected menu item
+    private void OnRemoveOrderItem(OrderItemsModel item)
+    {
+        Order.Items.Remove(item);
+        StateHasChanged();
+    }
+
+    [Parameter]
+    public EventCallback OnPay { get; set; }
+
+    private async void Pay()
+    {
+        await OnPay.InvokeAsync();
+    }
+}

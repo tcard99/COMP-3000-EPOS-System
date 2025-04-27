@@ -1,0 +1,129 @@
+﻿@page "/addMenu"
+@using CafeEPOS.Shared.Components
+@using CafeEPOS.Shared.Layout
+@layout NoLayout
+@inject NavigationManager navigation
+@using Microsoft.Maui.Controls
+@using CafeEPOS.Shared.Services
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Models
+@using System.Linq
+
+<PageTitle> Add Menu</PageTitle>
+
+<link rel="stylesheet" href="_content/CafeEPOS.Shared/startingScreenStyles.css" />
+
+<img src="_content/CafeEPOS.Shared/images/eposLogo.png" width="100" height="100" class="logo" alt="Logo" />
+<h1 style="text-align:center; padding-top:50px; margin-bottom:175px;">EASY ORDER EPOS SYSTEM</h1>
+
+
+<div class="container-fluid1">
+    <h2 style="text-align:center;">Add Menu</h2
+
+    <select class="CatDropDown" @bind="catId">
+        <option value="">Choose Category</option>
+        @foreach (var cat in Categorys)
+        {
+            <option value="@cat.Id">@cat.Name</option>
+        }
+    </select>
+
+    <br />
+
+    <input type="text" placeholder="Enter category name" style="text-align:center; width:50%; border-radius:50px;" @bind="newMenuName" />
+
+    <br />
+
+    <input type="number" placeholder="Enter Price" @bind="newMenuPrice" />
+
+
+    <div class="container-fluid1">
+        <div class="LoginBackContainer">
+            <button class="backButton" @onclick="back">Back</button>
+            <button class="loginButton" @onclick="add">Add</button>
+        </div>
+    </div>
+
+</div>
+
+<MessageDialog @ref="msgBox"></MessageDialog>
+
+<script src="_content/CafeEPOS.Shared/js/site.js"></script>
+
+@code
+{
+    [Inject] IJSRuntime JS { get; set; }
+
+    [Inject] IFormFactor FF { get; set; }
+
+    [Inject] LocalStorageService _localStorage { get; set; }
+
+    //Store found parent categorys
+    public List<CategoryModel> Categorys { get; set; } = new List<CategoryModel>();
+
+    //Selected parent id
+    public int catId { get; set; }
+
+    //Inputted cat name
+    public string newMenuName { get; set; }
+    public decimal newMenuPrice { get; set; }
+
+    public string token { get; set; }
+
+    public CategoryService catService = new CategoryService();
+    public MenuService menuServ = new MenuService();
+
+    private MessageDialog msgBox;
+
+
+    //Get system account token
+    public async Task<string> getToken()
+    {
+        return await _localStorage.GetValue("okten");
+    }
+
+    //Method to go back to previous page
+    public void back()
+    {
+        navigation.NavigateTo("/menu");
+    }
+
+    //Method to add a new category
+    public async void add()
+    {
+        //Check to see if a name has been entered
+        if (newMenuName == null || newMenuName == "")
+        {
+            msgBox.ShowMessage("Error", "Please enter a name");
+        }
+        else
+        {
+            if (catId == 0)
+            {
+                msgBox.ShowMessage("Error", "Please select a category");
+            }
+            else
+            {
+                //Call new menu service
+                var newItem = await menuServ.AddNewMenuItem(token, newMenuName, catId, newMenuPrice);
+                if (newItem == true)
+                {
+                    navigation.NavigateTo("/menu");
+                }
+                else
+                {
+                    msgBox.ShowMessage("Error", "Failed to add menu item");
+                    navigation.NavigateTo("/menu");
+                }
+            }
+        }
+    }
+
+    //Method to get all parent categories on page load
+    protected async override Task OnInitializedAsync()
+    {
+        token = await getToken();
+        Categorys = (await catService.GetAllCategoiesCall (token)).ToList();
+
+    }
+}

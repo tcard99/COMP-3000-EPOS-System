@@ -1,0 +1,92 @@
+﻿@page "/KDSPage"
+@using CafeEPOS.Shared.Layout
+@using CafeEPOS.Shared.Components
+@layout NoLayout
+@inject NavigationManager navigation
+@using Microsoft.Maui.Controls
+@using CafeEPOS.Shared.Services
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Models
+@using System.Linq
+
+<PageTitle>KDS Main Page</PageTitle>
+
+<link rel="stylesheet" href="_content/CafeEPOS.Shared/startingScreenStyles.css" />
+
+<img src="_content/CafeEPOS.Shared/images/eposLogo.png" width="100" height="100" class="logo" alt="Logo" />
+<h1 style="text-align:center; padding-top:50px">Kitchen Display System</h1>
+
+@if (orders != null)
+{
+    <div class="KDS-wrapper">
+        @foreach (var order in orders.Skip(CurrentPage * 4).Take(4))
+        {
+            <KDS_Ticket Order="order" CompleteOrder="OnCompleteOrder"></KDS_Ticket>
+        }
+    </div>
+
+    <div class="KDS-bottomButtons">
+
+        <button class="backButton" @onclick="logout">logout</button>
+
+        <OrderPagination PageSize="4" Count="orders.Count()" CurrentPage="CurrentPage" CurrentPageChanged="OnPageChange"></OrderPagination>
+
+        <button @onclick="refresh" class="loginButton">Refresh</button>
+    </div>
+}
+
+<script src="_content/CafeEPOS.Shared/js/site.js"></script>
+
+@code
+{
+    [Inject] IJSRuntime JS { get; set; }
+
+    [Inject] IFormFactor FF { get; set; }
+
+    [Inject] LocalStorageService _localStorage { get; set; }
+
+    [Inject] OrderService ordServ { get; set; }
+
+    private List<OrderInfoReturnModel> orders { get; set; }
+
+    private int CurrentPage { get; set; } = 0;
+
+    private string token { get; set; }
+
+    //Get system account token
+    public async Task<string> getToken()
+    {
+        return await _localStorage.GetValue("okten");
+    }
+
+    //paging method
+    public void OnPageChange(int page)
+    {
+        CurrentPage = page;
+        StateHasChanged();
+    }
+
+    //complete the order method
+    public async Task OnCompleteOrder(int id)
+    {
+        await ordServ.ChangeStateToPrepared(token, id);
+        await refresh();
+    }
+
+    public async Task refresh()
+    {
+        orders = (await ordServ.GetPreparingOrders(token)).ToList();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        token = await getToken();
+        await refresh();
+    }
+
+    //Logout method
+    public void logout()
+    {
+        navigation.NavigateTo("/KDSStaffLogin");
+    }
+}

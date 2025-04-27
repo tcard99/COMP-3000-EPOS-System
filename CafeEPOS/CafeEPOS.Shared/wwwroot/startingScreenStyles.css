@@ -1,0 +1,361 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background-color: #90e0ef;
+}
+
+.loginButton {
+    text-align: center;
+    background-color: #023e8a;
+    border-radius: 50px;
+    height: 50px;
+    width: 250px;
+    border: none;
+    color: white;
+    font-size: 20px;
+}
+
+    .loginButton:hover {
+        background-color: #03045e;
+    }
+
+
+.KDSButton {
+    text-align: center;
+    background-color: #023e8a;
+    border-radius: 50px;
+    height: 250px;
+    width: 250px;
+    border: none;
+    font-size: 50px;
+    color: white;
+}
+
+    .KDSButton:hover {
+        background-color: #03045e;
+    }
+
+
+.EposButton {
+    text-align: center;
+    background-color: #023e8a;
+    border-radius: 50px;
+    height: 250px;
+    width: 250px;
+    border: none;
+    font-size: 50px;
+    color: white;
+}
+
+    .EposButton:hover {
+        background-color: #03045e;
+    }
+
+.backButton {
+    text-align: center;
+    background-color: #a32cc4;
+    border-radius: 50px;
+    height: 50px;
+    width: 250px;
+    border: none;
+    font-size: 20px;
+    color: white;
+}
+
+    .backButton:hover {
+        background-color: #6c3baa;
+    }
+
+.systemOptionButtons {
+    width: 100px;
+    height: 100px;
+}
+
+.container-fluid1 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 50vh;
+    text-align: center;
+}
+
+.logo {
+    position: absolute;
+    left: 20px;
+    top: 20px;
+}
+
+.LoginBackContainer {
+    padding-top: 20px;
+}
+
+.table-containter {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+}
+
+.gird-button {
+    padding: 10px;
+    20px;
+    border: none;
+    border-radius: 100px;
+    text-align: center;
+    width: 200px;
+    height: 150px;
+    background-color: #023e8a;
+    font-size: 25px;
+    color: white;
+}
+
+    .gird-button:hover {
+        background-color: #03045e;
+    }
+
+
+table {
+    border-collapse: collapse;
+}
+
+td {
+    padding: 20px;
+}
+
+.CatDropDown {
+    text-align: center;
+    height: 50px;
+    border-radius: 50px;
+    width: 25%;
+    font-size: 25px;
+}
+
+.order-container-wrapper {
+    height: calc(100vh - 160px);
+}
+
+.order-container-footer {
+    height: 50px;
+    background-color: white;
+    margin: 0;
+    margin-top: 12px;
+    /*    border-top: 10px solid #90e0ef;*/
+}
+
+.order-container {
+    display: grid;
+    grid-template-columns: 250px auto 300px;
+    width: 100%;
+    height: 100%;
+}
+
+.order-categories {
+    height: calc(100vh - 180px);
+    max-height: calc(100vh - 180px);
+    background-color: white;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+.order-items {
+    margin: 5px;
+    background-color: white;
+}
+
+.order-items-checkout {
+    margin: 5px;
+    background-color: white;
+}
+
+.order-categories-items {
+    border: 1px solid gray;
+    border-radius: 5px;
+    text-align: center;
+    margin: 5px;
+    padding: 5px;
+    vertical-align: middle;
+}
+
+.order-menu-wrappper {
+    height: 100%;
+    background-color: #90e0ef;
+}
+
+.order-menu {
+    background-color: white;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    height: calc(100vh - 180px);
+    max-height: calc(100vh - 180px);
+    overflow: hidden;
+}
+
+.order-menu-items {
+    border: 1px solid gray;
+    border-radius: 5px;
+    text-align: center;
+    margin: 5px;
+    padding: 5px;
+    vertical-align: middle;
+}
+
+.order-checkout-item {
+    display: grid;
+    grid-template-columns: auto 50px 50px;
+    margin: 5px;
+}
+
+.order-checkout-wrapper {
+    max-height: calc(100vh - 180px);
+    height: calc(100vh - 180px);
+    background-color: white;
+    overflow-y: scroll;
+}
+
+.order-checkout-footer {
+    display: grid;
+    grid-template-columns: auto auto;
+    height: 50px;
+    background-color: white;
+    margin: 0;
+    margin-top: 12px;
+}
+
+.modal-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1000;
+}
+
+.modal-dialog-wrapper {
+    background-color: white;
+    border-radius: 10px;
+    width: 500px;
+    /*    height: 400px;*/
+    box-shadow: 0px 0px 10px #cccccc;
+    display: grid;
+    grid-template-rows: 40px auto 40px;
+    display: relative;
+    z-index: 1001;
+}
+
+.modal-dialog-header {
+    background-color: aqua;
+    font-weight: 600;
+    text-align: left;
+    border-radius: 10px 10px 0 0;
+    padding: 7px;
+}
+
+.modal-dialog-body {
+    padding: 15px;
+}
+
+.modal-dialog-footer {
+    text-align: right;
+    vertical-align: bottom;
+    padding-right: 15px;
+}
+
+.order-backButton {
+    text-align: center;
+    background-color: #a32cc4;
+    border-radius: 50px;
+    height: 80%;
+    width: 90%;
+    border: none;
+    font-size: 20px;
+    color: white;
+    margin: 5px;
+}
+
+    .order-backButton:hover {
+        background-color: #6c3baa;
+    }
+
+
+.KDS-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    margin-top: 30px;
+    max-height: calc(100vh - 200px);
+    height: calc(100vh - 200px);
+}
+
+.KDS-ticket {
+    border 2px solid gray;
+    background-color: white;
+    margin: 5px;
+    overflow-y: auto;
+}
+
+.KDS-ticket-header {
+    background-color: lightcoral;
+    display: grid;
+    grid-template-columns: auto auto;
+}
+
+    .KDS-ticket-header p:last-child {
+        text-align: right;
+    }
+
+    .KDS-ticket-header p {
+        margin: 5px;
+    }
+
+.KDS-ticket-Items {
+    padding: 5px;
+}
+
+    .KDS-ticket-Items p {
+        margin: 0;
+    }
+
+.KDS-bottomButtons {
+    display: grid;
+    grid-template-columns: auto auto 250px;
+    margin: 10px;
+}
+
+.StatsSummaryBox-wrapper {
+    height: calc(100vh - 200px);
+    max-height: calc(100vh - 200px);
+    margin-top: 30px;
+    background-color: white;
+}
+
+.StatsSummaryBox-Container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    margin: 5px;
+}
+
+.StatsSummaryBox {
+    border: solid 2px gray;
+    border-radius: 5px;
+    margin: 5px;
+    text-align: center;
+}
+
+    .StatsSummaryBox h2 {
+        font-size: small;
+    }
+
+    .StatsSummaryBox img {
+        height: 32px;
+        width: 64px;
+        margin: 5px;
+    }
+

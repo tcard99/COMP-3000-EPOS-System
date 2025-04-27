@@ -1,0 +1,116 @@
+﻿@page "/Admin"
+@using CafeEPOS.Shared.Components
+@using CafeEPOS.Shared.Layout
+@layout NoLayout
+@inject NavigationManager navigation
+@using Microsoft.Maui.Controls
+@using CafeEPOS.Shared.Services
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Models
+@using System.Linq
+
+<PageTitle>Admin</PageTitle>
+
+<link rel="stylesheet" href="_content/CafeEPOS.Shared/startingScreenStyles.css" />
+
+<img src="_content/CafeEPOS.Shared/images/eposLogo.png" width="100" height="100" class="logo" alt="Logo" />
+<h1 style="text-align:center; padding-top:50px">EASY ORDER EPOS SYSTEM</h1>
+<h2 style="text-align:center;">Admin</h2>
+
+<div class="container-fluid1">
+    <!--Check to see if there are any items-->
+    @if (Staff == null)
+    {
+        <p>No Staff Found</p>
+    }
+    else
+    {
+        <!--If there are items display all items-->
+        <QuickGrid Items="Staff.AsQueryable()" Pagination="state">
+            <PropertyColumn Property="@(x => x.Name)" Title="Staff Name" />
+            <PropertyColumn Property="@(x => x.staffId)" />
+            <PropertyColumn Property="@(x => x.role == 1 ? "Admin" : "Waiter")" Title="Role" Sortable="true" />
+
+
+            <TemplateColumn Context="items">
+                <button @onclick="() => edit(items.Id)">Edit</button>
+                <button @onclick="() => remove(items.Id)">Remove</button>
+            </TemplateColumn>
+        </QuickGrid>
+
+        <Paginator State="state" />
+    }
+
+    <div class="container-fluid1">
+        <div class="LoginBackContainer">
+            <button class="backButton" @onclick="back">Back</button>
+            <button class="loginButton" @onclick="add">Add</button>
+        </div>
+    </div>
+
+</div>
+
+<MessageDialog @ref="msgBox"></MessageDialog>
+
+<script src="_content/CafeEPOS.Shared/js/site.js"></script>
+
+
+
+
+@code
+{
+    [Inject] IJSRuntime JS { get; set; }
+    [Inject] IFormFactor FF { get; set; }
+    [Inject] LocalStorageService _localStorage { get; set; }
+
+    AdminService adminServ = new AdminService();
+
+    PaginationState state = new PaginationState() { ItemsPerPage = 10 };
+
+    private IEnumerable<StaffAccountReturnModel> Staff = [];
+
+    public string token { get; set; }
+
+    private MessageDialog msgBox;
+
+    public async Task<string> getToken()
+    {
+        return await _localStorage.GetValue("okten");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        token = await getToken();
+        Staff = (await adminServ.GetAllStaff(token)).AsQueryable();
+
+    }
+
+    public void edit(int id)
+    {
+        navigation.NavigateTo($"/editStaff/{id}");
+    }
+
+    public async void remove(int id)
+    {
+        var removeStaff = await adminServ.RemoveStaffAccount(token, id);
+
+        if (removeStaff == true)
+        {
+            navigation.NavigateTo("/EposDash");
+        }
+        else
+        {
+            msgBox.ShowMessage("Error", "Account Removal Failed");
+        }
+    }
+
+    public void add()
+    {
+        navigation.NavigateTo("/addStaff");
+    }
+
+    public void back()
+    {
+        navigation.NavigateTo("/EposDash");
+    }
+}

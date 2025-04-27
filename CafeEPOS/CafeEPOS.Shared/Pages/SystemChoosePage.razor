@@ -1,0 +1,57 @@
+﻿@page "/SystemChoosePage"
+@using CafeEPOS.Shared.Layout
+@layout NoLayout
+@inject NavigationManager navigation
+@using Microsoft.Maui.Controls
+@using CafeEPOS.Shared.Services
+
+<PageTitle>System Choose</PageTitle>
+
+<link rel="stylesheet" href="_content/CafeEPOS.Shared/startingScreenStyles.css" />
+
+<img src="_content/CafeEPOS.Shared/images/eposLogo.png" width="100" height="100" class="logo" alt="Logo" />
+<h1 style="text-align:center; padding-top:50px">EASY ORDER EPOS SYSTEM</h1>
+
+
+<!--Put title in midle of page-->
+<div class="container-fluid1">
+    <div class="LoginBackContainer">
+        <div class="LoginBackContainer" style="padding-bottom:20px">
+            <button class="EposButton" style="margin-right:10px" @onclick="EposPage">
+                EPOS
+            </button>
+            <button class="KDSButton" @onclick="KDSPage">
+                KDS
+            </button>
+        </div>
+        <button class="backButton" @onclick="logout">LOGOUT</button>
+    </div>
+
+</div>
+
+<script src="_content/CafeEPOS.Shared/js/site.js"></script>
+
+@code
+{
+    //Allow me to use JS scripts and call them
+    [Inject] IJSRuntime JS { get; set; }
+
+    [Inject] LocalStorageService _localStorage { get; set; }
+
+    public async void logout()
+    {
+        await _localStorage.RemoveValue("okten");
+        navigation.NavigateTo("/");
+    }
+
+    public void EposPage()
+    {
+        navigation.NavigateTo("/EposStaffLogin");
+    }
+
+    public void KDSPage()
+    {
+        navigation.NavigateTo("/KDSStaffLogin");
+    }
+
+}

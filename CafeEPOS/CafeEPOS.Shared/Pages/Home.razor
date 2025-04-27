@@ -4,42 +4,16 @@
 @inject IFormFactor FormFactor
 @layout NoLayout
 
+
 <PageTitle>Welcome Screen</PageTitle>
 
-<h1 style="text-align:center;">EPOS System</h1>
+<link rel="stylesheet" href="_content/CafeEPOS.Shared/startingScreenStyles.css" />
 
-<style>
-    html, body {
-        height: 100%;
-        margin: 0;
-        overflow: hidden;
-    }
-
-    .loginButton {
-        text-align: center;
-        background-color: #9BE265;
-        border-radius: 50px;
-        height: 50px;
-        width: 250px;
-        border: none
-    }
-
-        .loginButton:hover {
-            background-color: #8AC64F;
-        }
-
-    .container-fluid {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        text-align: center;
-    }
-</style>
+<img src="_content/CafeEPOS.Shared/images/eposLogo.png" width="100" height="100" class="logo" alt="Logo" />
+<h1 style="text-align:center; padding-top:50px">EASY ORDER EPOS SYSTEM</h1>
 
 <!--Allow buttons to be centered in page-->
-<div class="container-fluid"> 
+<div class="container-fluid1" style="height: 75vh">
 
     <!--Login button which will take user to login page-->
     <a href="/custLogin">
@@ -50,10 +24,27 @@
 
     <!--Register button which will take user to register page-->
     <a href="/custRegister">
-    <button class="loginButton">REGISTER</button>
+        <button class="loginButton">REGISTER</button>
     </a>
 
 </div>
+
+<script src="_content/CafeEPOS.Shared/js/site.js"></script>
+
 @code
 {
+    [Inject] IJSRuntime JS { get; set; }
+
+    [Inject] LocalStorageService _localStorage { get; set; }
+
+    public string token { get; set; }
+
+    //Not working
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            //token = await _localStorage.GetValue("okten");
+        }
+    }
 }

@@ -9,8 +9,6 @@
 @using System.Linq
 @using CafeEPOS.Shared.Components
 
-@inject StatsService statServ;
-
 <PageTitle>Stats</PageTitle>
 
 <link rel="stylesheet" href="_content/CafeEPOS.Shared/startingScreenStyles.css" />
@@ -38,6 +36,7 @@
 {
     [Inject] LocalStorageService _localStorage { get; set; }
 
+    public StatsService statServ = new StatsService();
 
     public statsReturnModel statItem { get; set; }
 

@@ -9,24 +9,23 @@ using System.Threading.Tasks;
 
 namespace CafeEPOS.Shared.Services
 {
-    public class StatsService(IHttpClientFactory clientFactory)
+    public class StatsService()
     {
 
-        private string baseApiUrl = "http://localhost:5123/";
-        //private string baseApiUrl = "https://web.socem.plymouth.ac.uk/comp3000/tcard-api/";
+        //private string baseApiUrl = "http://localhost:5123/";
+        private string baseApiUrl = "https://web.socem.plymouth.ac.uk/comp3000/tcard-api/";
 
+        private static readonly HttpClient _httpClient = new HttpClient();
         public async Task<statsReturnModel> GetStats(string sysAccountToken)
         {
-            using var httpClient = clientFactory.CreateClient("api");
-
             //Set up paramter
             var param = $"sysAccountToken={sysAccountToken}";
 
             //Set up URL
-            var url = $"Stats/GetStats?{param}";
+            var url = $"{baseApiUrl}Stats/GetStats?{param}";
 
             //Add data for api 
-            var response = await httpClient.GetAsync(url);
+            var response = await _httpClient.GetAsync(url);
 
             if (response.IsSuccessStatusCode)
             {
